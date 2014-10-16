@@ -19,7 +19,7 @@ This package is available fom Melpa, you may install it by calling
 Then activate it with
 
     (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
-    (add-hook ’css-mode-hook #'aggressive-indent-mode)
+    (add-hook 'css-mode-hook #'aggressive-indent-mode)
 
 You can use this hook on any mode you want, `aggressive-indent` is not
 exclusive to emacs-lisp code. In fact, if you want to turn it on for
@@ -30,7 +30,7 @@ every programming mode, you can do something like:
     
 ### Manual Installation ###
     
-If you don’t want to install from Melpa, you can download it manually,
+If you don't want to install from Melpa, you can download it manually,
 place it in your `load-path` and require it with
 
     (require 'aggressive-indent)
