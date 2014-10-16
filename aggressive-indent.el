@@ -1,4 +1,4 @@
-;;; aggressive-indent.el --- Minor mode to keep your code always indented. More aggressive than electric-indent-mode.
+;;; aggressive-indent.el --- Minor mode to aggressively keep your code always indented
 
 ;; Copyright (C) 2014 Artur Malabarba <bruce.connor.am@gmail.com>
 
