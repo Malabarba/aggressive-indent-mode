@@ -145,7 +145,7 @@ Throw an error if parentheses are unbalanced."
 
 ;;; Minor modes
 :autoload
-(define-minor-mode mode nil nil " ->"
+(define-minor-mode mode nil nil " =>"
   '(("\C-c\C-q" . aggressive-indent-indent-defun))
   (if mode
       (if (and global-aggressive-indent-mode
