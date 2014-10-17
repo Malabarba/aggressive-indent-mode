@@ -101,7 +101,9 @@ Please include this in your report!"
 
 
 ;;; Start of actual Code:
-(defcustom excluded-modes '(text-mode tabulated-list-mode special-mode)
+(defcustom excluded-modes
+  '(text-mode tabulated-list-mode special-mode
+              minibuffer-inactive-mode)
   "Modes in which `aggressive-indent-mode' should not be activated.
 This variable is only used if `global-aggressive-indent-mode' is
 active. If the minor mode is turned on with the local command,
@@ -138,29 +140,33 @@ Meant for use in hooks. Interactively, use the other one."
   "Indent current defun.
 Throw an error if parentheses are unbalanced."
   (interactive)
-  (indent-region
-   (save-excursion (beginning-of-defun 1) (point))
-   (save-excursion (end-of-defun 1) (point))))
+  (let ((p (point-marker)))
+    (set-marker-insertion-type p t)
+    (indent-region
+     (save-excursion (beginning-of-defun 1) (point))
+     (save-excursion (end-of-defun 1) (point)))
+    (goto-char p)))
 
 
 ;;; Minor modes
+:autoload
+(define-globalized-minor-mode global-aggressive-indent-mode 
+  mode mode)
+
 :autoload
 (define-minor-mode mode nil nil " =>"
   '(("\C-c\C-q" . aggressive-indent-indent-defun))
   (if mode
       (if (and global-aggressive-indent-mode
-               (cl-member-if #'derived-mode-p excluded-modes))
+               (or (cl-member-if #'derived-mode-p excluded-modes)
+                   buffer-read-only))
           (mode -1)
         (setq-local electric-indent-mode nil)
         (add-hook 'post-command-hook #'-softly-indent-defun nil 'local))
     (remove-hook 'post-command-hook #'-softly-indent-defun 'local)))
 
 :autoload
-(define-globalized-minor-mode global-aggressive-indent-mode 
-  mode mode)
-
-:autoload
-(defalias #'aggressive-indent-global-mode 
+(defalias 'aggressive-indent-global-mode 
   #'global-aggressive-indent-mode)
 )
 
