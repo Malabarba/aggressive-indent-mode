@@ -226,7 +226,7 @@ Throw an error if parentheses are unbalanced."
   mode mode)
 
 :autoload
-(defalias 'aggressive-indent-global-mode 
+(defalias 'aggressive-indent-global-mode
   #'global-aggressive-indent-mode)
 )
 
