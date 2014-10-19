@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>
 ;; URL: http://github.com/Bruce-Connor/aggressive-indent-mode
-;; Version: 0.1
+;; Version: 0.2
 ;; Package-Requires: ((emacs "24.1") (names "0.5") (cl-lib "0.5"))
 ;; Keywords: indent lisp maint tools
 ;; Prefix: aggressive-indent
@@ -80,6 +80,7 @@
 ;;
 
 ;;; Change Log:
+;; 0.2 - 2014/10/19 - Add variable `aggressive-indent-dont-indent-if', so the user can prevent indentation.
 ;; 0.1 - 2014/10/15 - Release.
 ;;; Code:
 
@@ -119,6 +120,50 @@ commands will NOT be followed by a re-indent."
   :type '(repeat symbol)
   :package-version '(aggressive-indent . "0.1"))
 
+(defvar -internal-dont-indent-if
+  '((memq last-command aggressive-indent-protected-commands)
+    (region-active-p)
+    buffer-read-only
+    (null (buffer-modified-p)))
+  "List of forms which prevent indentation when they evaluate to non-nil.
+This is for internal use only. For user customization, use
+`aggressive-indent-dont-indent-if' instead.")
+
+(eval-after-load 'yasnippet
+  '(when (boundp 'yas--active-field-overlay)
+     (add-to-list 'aggressive-indent--internal-dont-indent-if
+                  '(and
+                    (overlayp yas--active-field-overlay)
+                    (overlay-end yas--active-field-overlay))
+                  'append)))
+(eval-after-load 'company
+  '(when (boundp 'company-candidates)
+     (add-to-list 'aggressive-indent--internal-dont-indent-if
+                  'company-candidates)))
+(eval-after-load 'auto-complete
+  '(when (boundp 'ac-completing)
+     (add-to-list 'aggressive-indent--internal-dont-indent-if
+                  'ac-completing)))
+
+(defcustom dont-indent-if '()
+  "List of variables and functions to prevent aggressive indenting.
+This variable is a list where each element is a lisp form.
+As long as any one of these forms returns non-nil,
+aggressive-indent will not perform any indentation.
+
+See `aggressive-indent--internal-dont-indent-if' for usage examples."
+  :type '(repeat sexp)
+  :group 'aggressive-indent
+  :package-version '(aggressive-indent . "0.2"))
+
+(defvar -error-message
+  "One of the forms in `aggressive-indent-dont-indent-if' had the following error, I've disabled it until you fix it: %S" 
+  "Error message thrown by `aggressive-indent-dont-indent-if'.")
+
+(defvar -has-errored nil 
+  "Keep track of whether `aggressive-indent-dont-indent-if' is throwing.
+This is used to prevent an infinite error loop on the user.")
+
 (defun -softly-indent-defun ()
   "Indent current defun unobstrusively.
 Like `aggressive-indent-indent-defun', except do nothing if
@@ -126,14 +171,29 @@ mark is active (to avoid deactivaing it), or if buffer is not
 modified (to avoid creating accidental modifications).
 Also, never throw errors nor messages.
 
-Meant for use in hooks. Interactively, use the other one."
-  (unless (or (region-active-p)
-              buffer-read-only
-              (null (buffer-modified-p))
-              (memq last-command protected-commands))
+Meant for use in hooks. Interactively, use the other one.
+Indentation is not performed if any of the forms in
+`dont-indent-if' evaluates to non-nil."
+  (unless (or (run-hook-wrapped
+               'aggressive-indent--internal-dont-indent-if
+               #'eval)
+              (-run-user-hooks))
     (ignore-errors
       (cl-letf (((symbol-function 'message) #'ignore))
         (indent-defun)))))
+
+(defun -run-user-hooks ()
+  "Safely run forms in `aggressive-indent-dont-indent-if'.
+If any of them errors out, we only report it once until it stops
+erroring again."
+  (and dont-indent-if
+       (condition-case er
+           (prog1 (eval (cons 'or dont-indent-if))
+             (setq -has-errored nil))
+         (error
+          (unless -has-errored
+            (setq -has-errored t)
+            (message -error-message er))))))
 
 :autoload
 (defun indent-defun ()
