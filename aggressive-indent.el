@@ -91,7 +91,7 @@
 ;;;###autoload
 (define-namespace aggressive-indent- :group indent
 
-(defconst version "0.1" "Version of the aggressive-indent.el package.")
+(defconst version "0.2" "Version of the aggressive-indent.el package.")
 (defun bug-report ()
   "Opens github issues page in a web browser. Please send any bugs you find.
 Please include your emacs and aggressive-indent versions."
