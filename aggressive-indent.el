@@ -80,6 +80,7 @@
 ;;
 
 ;;; Change Log:
+;; 0.2 - 2014/10/20 - Reactivate `electric-indent-mode'.
 ;; 0.2 - 2014/10/19 - Add variable `aggressive-indent-dont-indent-if', so the user can prevent indentation.
 ;; 0.1 - 2014/10/15 - Release.
 ;;; Code:
@@ -217,7 +218,8 @@ Throw an error if parentheses are unbalanced."
                (or (cl-member-if #'derived-mode-p excluded-modes)
                    buffer-read-only))
           (mode -1)
-        (setq-local electric-indent-mode nil)
+        (when (fboundp 'electric-indent-local-mode)
+          (electric-indent-local-mode 1))
         (add-hook 'post-command-hook #'-softly-indent-defun nil 'local))
     (remove-hook 'post-command-hook #'-softly-indent-defun 'local)))
 
