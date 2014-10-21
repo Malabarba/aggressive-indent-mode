@@ -105,7 +105,8 @@ Please include this in your report!"
 ;;; Start of actual Code:
 (defcustom excluded-modes
   '(text-mode tabulated-list-mode special-mode
-              minibuffer-inactive-mode)
+              minibuffer-inactive-mode
+              yaml-mode)
   "Modes in which `aggressive-indent-mode' should not be activated.
 This variable is only used if `global-aggressive-indent-mode' is
 active. If the minor mode is turned on with the local command,
