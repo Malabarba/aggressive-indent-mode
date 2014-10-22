@@ -28,6 +28,11 @@ every programming mode, you can do something like:
     (global-aggressive-indent-mode 1)
     (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
 
+DEMO:
+
+![aggressive-indent](aggressive-indent.gif)
+
+
 ### Manual Installation ###
 
 If you don't want to install from Melpa, you can download it manually,
