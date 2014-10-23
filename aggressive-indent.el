@@ -131,6 +131,21 @@ commands will NOT be followed by a re-indent."
 This is for internal use only. For user customization, use
 `aggressive-indent-dont-indent-if' instead.")
 
+(defcustom modes-to-prefer-defun '(emacs-lisp-mode)
+  "List of major-modes in which indenting defun is preferred.
+Add here any major modes with very good definitions of
+`end-of-defun' and `beginning-of-defun', or modes which bug out
+if you have `after-change-functions' (such as paredit).
+
+If current major mode is derived from one of these,
+`aggressive-indent-mode' will call
+`aggressive-indent-indent-defun' after every command. Otherwise,
+it will call `aggressive-indent-indent-region-and-on' after every
+buffer change."
+  :type '(repeat symbol)
+  :group 'aggressive-indent
+  :package-version '(aggressive-indent . "0.3"))
+
 (eval-after-load 'yasnippet
   '(when (boundp 'yas--active-field-overlay)
      (add-to-list 'aggressive-indent--internal-dont-indent-if
@@ -221,6 +236,38 @@ Like `aggressive-indent-indent-defun', but wrapped in a
 `aggressive-indent--do-softly'."
   (-do-softly (indent-defun)))
 
+:autoload
+(defun indent-region-and-on (l r)
+  "Indent region between L and R, and then some.
+Call `indent-region' between L and R, and then keep indenting
+until nothing more happens."
+  (interactive "r")
+  (let ((p (point-marker))
+        was-begining-of-line)
+    (set-marker-insertion-type p t)
+    (goto-char r)
+    (setq was-begining-of-line
+          (= r (line-beginning-position)))
+    ;; Indent the affected region. 
+    (unless (= l r) (indent-region l r))
+    ;; `indent-region' doesn't do anything if R was the beginning of a line, so we indent manually there.
+    (when was-begining-of-line
+      (indent-according-to-mode))
+    ;; And then we indent each following line until nothing happens.
+    (forward-line 1)
+    (while (/= (progn (skip-chars-forward "[:blank:]")
+                      (point))
+               (progn (indent-according-to-mode)
+                      (point)))
+      (forward-line 1))
+    (goto-char p)))
+
+(defun -softly-indent-region-and-on (l r &rest _)
+  "Indent current defun unobstrusively.
+Like `aggressive-indent-indent-region-and-on', but wrapped in a
+`aggressive-indent--do-softly'."
+  (-do-softly (indent-region-and-on l r)))
+
 
 ;;; Minor modes
 :autoload
@@ -233,8 +280,11 @@ Like `aggressive-indent-indent-defun', but wrapped in a
           (mode -1)
         (when (fboundp 'electric-indent-local-mode)
           (electric-indent-local-mode 1))
-        (add-hook 'post-command-hook #'-softly-indent-defun nil 'local))
-    (remove-hook 'post-command-hook #'-softly-indent-defun 'local)))
+        (if (cl-member-if #'derived-mode-p modes-to-prefer-defun)
+            (add-hook 'post-command-hook #'-softly-indent-defun nil 'local)
+          (add-hook 'after-change-functions #'-softly-indent-region-and-on nil 'local)))
+    (remove-hook 'post-command-hook #'-softly-indent-defun 'local)
+    (remove-hook 'after-change-functions #'-softly-indent-region-and-on 'local)))
 
 :autoload
 (define-globalized-minor-mode global-aggressive-indent-mode
