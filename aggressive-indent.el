@@ -172,24 +172,6 @@ See `aggressive-indent--internal-dont-indent-if' for usage examples."
   "Keep track of whether `aggressive-indent-dont-indent-if' is throwing.
 This is used to prevent an infinite error loop on the user.")
 
-(defun -softly-indent-defun ()
-  "Indent current defun unobstrusively.
-Like `aggressive-indent-indent-defun', except do nothing if
-mark is active (to avoid deactivaing it), or if buffer is not
-modified (to avoid creating accidental modifications).
-Also, never throw errors nor messages.
-
-Meant for use in hooks. Interactively, use the other one.
-Indentation is not performed if any of the forms in
-`dont-indent-if' evaluates to non-nil."
-  (unless (or (run-hook-wrapped
-               'aggressive-indent--internal-dont-indent-if
-               #'eval)
-              (-run-user-hooks))
-    (ignore-errors
-      (cl-letf (((symbol-function 'message) #'ignore))
-        (indent-defun)))))
-
 (defun -run-user-hooks ()
   "Safely run forms in `aggressive-indent-dont-indent-if'.
 If any of them errors out, we only report it once until it stops
@@ -203,6 +185,24 @@ erroring again."
             (setq -has-errored t)
             (message -error-message er))))))
 
+(defmacro -do-softly (&rest body)
+  "Execute body unobstrusively.
+This means: do nothing if mark is active (to avoid deactivaing
+it), or if buffer is not modified (to avoid creating accidental
+modifications), or if any of the forms in
+`aggressive-indent-dont-indent-if' evaluates to non-nil.
+
+Also, never throw errors nor messages.
+Meant for use in functions which go in hooks."
+  (declare (debug t))
+  `(unless (or (run-hook-wrapped
+                'aggressive-indent--internal-dont-indent-if
+                #'eval)
+               (aggressive-indent--run-user-hooks))
+     (ignore-errors
+       (cl-letf (((symbol-function 'message) #'ignore))
+         ,@body))))
+
 :autoload
 (defun indent-defun ()
   "Indent current defun.
@@ -214,6 +214,12 @@ Throw an error if parentheses are unbalanced."
      (save-excursion (beginning-of-defun 1) (point))
      (save-excursion (end-of-defun 1) (point)))
     (goto-char p)))
+
+(defun -softly-indent-defun ()
+  "Indent current defun unobstrusively.
+Like `aggressive-indent-indent-defun', but wrapped in a
+`aggressive-indent--do-softly'."
+  (-do-softly (indent-defun)))
 
 
 ;;; Minor modes
