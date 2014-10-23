@@ -80,6 +80,7 @@
 ;;
 
 ;;; Change Log:
+;; 0.3 - 2014/10/23 - Implement a smarter engine for non-lisp modes.
 ;; 0.2 - 2014/10/20 - Reactivate `electric-indent-mode'.
 ;; 0.2 - 2014/10/19 - Add variable `aggressive-indent-dont-indent-if', so the user can prevent indentation.
 ;; 0.1 - 2014/10/15 - Release.
@@ -91,7 +92,7 @@
 ;;;###autoload
 (define-namespace aggressive-indent- :group indent
 
-(defconst version "0.2" "Version of the aggressive-indent.el package.")
+(defconst version "0.3" "Version of the aggressive-indent.el package.")
 (defun bug-report ()
   "Opens github issues page in a web browser. Please send any bugs you find.
 Please include your emacs and aggressive-indent versions."
@@ -165,7 +166,7 @@ buffer change."
 (eval-after-load 'css-mode
   '(add-hook
     'css-mode-hook
-    (lambda () (unless defun-prompt-regexp 
+    (lambda () (unless defun-prompt-regexp
             (setq-local defun-prompt-regexp "^[^[:blank:]].*")))))
 
 (defcustom dont-indent-if '()
@@ -180,10 +181,10 @@ See `aggressive-indent--internal-dont-indent-if' for usage examples."
   :package-version '(aggressive-indent . "0.2"))
 
 (defvar -error-message
-  "One of the forms in `aggressive-indent-dont-indent-if' had the following error, I've disabled it until you fix it: %S" 
+  "One of the forms in `aggressive-indent-dont-indent-if' had the following error, I've disabled it until you fix it: %S"
   "Error message thrown by `aggressive-indent-dont-indent-if'.")
 
-(defvar -has-errored nil 
+(defvar -has-errored nil
   "Keep track of whether `aggressive-indent-dont-indent-if' is throwing.
 This is used to prevent an infinite error loop on the user.")
 
@@ -248,7 +249,7 @@ until nothing more happens."
     (goto-char r)
     (setq was-begining-of-line
           (= r (line-beginning-position)))
-    ;; Indent the affected region. 
+    ;; Indent the affected region.
     (unless (= l r) (indent-region l r))
     ;; `indent-region' doesn't do anything if R was the beginning of a line, so we indent manually there.
     (when was-begining-of-line
@@ -268,6 +269,27 @@ Like `aggressive-indent-indent-region-and-on', but wrapped in a
 `aggressive-indent--do-softly'."
   (-do-softly (indent-region-and-on l r)))
 
+(defvar changed-list-right nil
+  "List of right limit of regions changed in the last command loop.")
+
+(defvar changed-list-left nil
+  "List of left limit of regions changed in the last command loop.")
+
+(defun -indent-if-changed ()
+  "Indent any region that changed in the last command loop."
+  (let ((inhibit-modification-hooks t))
+    (when changed-list-left
+      (-softly-indent-region-and-on
+       (apply #'min changed-list-left)
+       (apply #'max changed-list-right))
+      (setq changed-list-left nil
+            changed-list-right nil))))
+
+(defun -keep-track-of-changes (l r &rest _)
+  "Store the limits of each change that happens in the buffer."
+  (push l changed-list-left)
+  (push r changed-list-right))
+
 
 ;;; Minor modes
 :autoload
@@ -282,9 +304,12 @@ Like `aggressive-indent-indent-region-and-on', but wrapped in a
           (electric-indent-local-mode 1))
         (if (cl-member-if #'derived-mode-p modes-to-prefer-defun)
             (add-hook 'post-command-hook #'-softly-indent-defun nil 'local)
-          (add-hook 'after-change-functions #'-softly-indent-region-and-on nil 'local)))
-    (remove-hook 'post-command-hook #'-softly-indent-defun 'local)
-    (remove-hook 'after-change-functions #'-softly-indent-region-and-on 'local)))
+          (add-hook 'after-change-functions #'-keep-track-of-changes nil 'local)
+          (add-hook 'post-command-hook #'-indent-if-changed nil 'local)))
+    ;; Clean the hooks
+    (remove-hook 'after-change-functions #'-keep-track-of-changes 'local)
+    (remove-hook 'post-command-hook #'-indent-if-changed 'local)
+    (remove-hook 'post-command-hook #'-softly-indent-defun 'local)))
 
 :autoload
 (define-globalized-minor-mode global-aggressive-indent-mode
