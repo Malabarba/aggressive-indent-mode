@@ -123,7 +123,7 @@ commands will NOT be followed by a re-indent."
   :package-version '(aggressive-indent . "0.1"))
 
 (defvar -internal-dont-indent-if
-  '((memq last-command aggressive-indent-protected-commands)
+  '((memq this-command aggressive-indent-protected-commands)
     (region-active-p)
     buffer-read-only
     (null (buffer-modified-p)))
