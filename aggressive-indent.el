@@ -106,13 +106,13 @@ Please include this in your report!"
 (defcustom excluded-modes
   '(text-mode tabulated-list-mode special-mode
               minibuffer-inactive-mode
-              yaml-mode)
+              yaml-mode jabber-chat-mode)
   "Modes in which `aggressive-indent-mode' should not be activated.
 This variable is only used if `global-aggressive-indent-mode' is
 active. If the minor mode is turned on with the local command,
 `aggressive-indent-mode', this variable is ignored."
   :type '(repeat symbol)
-  :package-version '(aggressive-indent . "0.1"))
+  :package-version '(aggressive-indent . "0.2"))
 
 (defcustom protected-commands '(undo undo-tree-undo undo-tree-redo)
   "Commands after which indentation will NOT be performed.
@@ -146,6 +146,12 @@ This is for internal use only. For user customization, use
   '(when (boundp 'ac-completing)
      (add-to-list 'aggressive-indent--internal-dont-indent-if
                   'ac-completing)))
+
+(eval-after-load 'css-mode
+  '(add-hook
+    'css-mode-hook
+    (lambda () (unless defun-prompt-regexp 
+            (setq-local defun-prompt-regexp "^[^[:blank:]].*")))))
 
 (defcustom dont-indent-if '()
   "List of variables and functions to prevent aggressive indenting.
