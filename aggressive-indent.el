@@ -98,7 +98,7 @@ Please include your emacs and aggressive-indent versions."
   (interactive)
   (message "Your `aggressive-indent-version' is: %s, and your emacs version is: %s.
 Please include this in your report!"
-           aggressive-indent-version emacs-version)
+           version emacs-version)
   (browse-url "https://github.com/Bruce-Connor/aggressive-indent-mode/issues/new"))
 
 
