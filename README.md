@@ -6,9 +6,13 @@ all you do is type. However, once you start shifting blocks around,
 transposing lines, or slurping and barfing sexps, indentation is bound
 to go wrong.
 
-`aggressive-indent-mode` is a minor mode that keeps your code always
+**`aggressive-indent-mode`** is a minor mode that keeps your code **always**
 indented. It reindents after every command, making it more reliable
 than `electric-indent-mode`.
+
+### Demonstration ###
+
+![aggressive-indent](aggressive-indent.gif)
 
 ### Instructions ###
 
@@ -28,10 +32,12 @@ every programming mode, you can do something like:
     (global-aggressive-indent-mode 1)
     (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
 
-DEMO:
 
-![aggressive-indent](aggressive-indent.gif)
-
+*Plase Note:* `aggressive-indent` works superbly with lisp-like modes
+ (where `end-of-defun`) works very nicely. However, in some c-like
+ modes aggressive-indent
+ [might cause some lag](https://github.com/Bruce-Connor/aggressive-indent-mode/issues/7),
+ I'm working on that.
 
 ### Manual Installation ###
 
