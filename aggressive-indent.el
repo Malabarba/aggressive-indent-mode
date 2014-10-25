@@ -132,7 +132,7 @@ commands will NOT be followed by a re-indent."
 This is for internal use only. For user customization, use
 `aggressive-indent-dont-indent-if' instead.")
 
-(defcustom modes-to-prefer-defun '(emacs-lisp-mode)
+(defcustom modes-to-prefer-defun '(emacs-lisp-mode lisp-mode scheme-mode)
   "List of major-modes in which indenting defun is preferred.
 Add here any major modes with very good definitions of
 `end-of-defun' and `beginning-of-defun', or modes which bug out
@@ -235,7 +235,13 @@ Throw an error if parentheses are unbalanced."
   "Indent current defun unobstrusively.
 Like `aggressive-indent-indent-defun', but wrapped in a
 `aggressive-indent--do-softly'."
-  (-do-softly (indent-defun)))
+  (unless (or (run-hook-wrapped
+               'aggressive-indent--internal-dont-indent-if
+               #'eval)
+              (aggressive-indent--run-user-hooks))
+    (ignore-errors
+      (cl-letf (((symbol-function 'message) #'ignore))
+        (indent-defun)))))
 
 :autoload
 (defun indent-region-and-on (l r)
@@ -267,7 +273,13 @@ until nothing more happens."
   "Indent current defun unobstrusively.
 Like `aggressive-indent-indent-region-and-on', but wrapped in a
 `aggressive-indent--do-softly'."
-  (-do-softly (indent-region-and-on l r)))
+  (unless (or (run-hook-wrapped
+               'aggressive-indent--internal-dont-indent-if
+               #'eval)
+              (aggressive-indent--run-user-hooks))
+    (ignore-errors
+      (cl-letf (((symbol-function 'message) #'ignore))
+        (indent-region-and-on l r)))))
 
 (defvar changed-list-right nil
   "List of right limit of regions changed in the last command loop.")
