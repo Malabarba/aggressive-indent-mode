@@ -132,7 +132,7 @@ commands will NOT be followed by a re-indent."
 This is for internal use only. For user customization, use
 `aggressive-indent-dont-indent-if' instead.")
 
-(defcustom modes-to-prefer-defun '(emacs-lisp-mode)
+(defcustom modes-to-prefer-defun '(emacs-lisp-mode lisp-mode scheme-mode)
   "List of major-modes in which indenting defun is preferred.
 Add here any major modes with very good definitions of
 `end-of-defun' and `beginning-of-defun', or modes which bug out
