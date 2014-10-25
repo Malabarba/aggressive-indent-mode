@@ -12,7 +12,11 @@ than `electric-indent-mode`.
 
 ### Demonstration ###
 
+- An example of Lisp mode (Emacs Lisp):
 ![aggressive-indent](aggressive-indent.gif)
+
+- An example of non-Lisp mode (C++):
+![aggressive-indent](aggressive-indent-non-lisp.gif)
 
 ### Instructions ###
 
