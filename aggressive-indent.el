@@ -263,6 +263,11 @@ until nothing more happens."
     (goto-char r)
     (setq was-begining-of-line
           (= r (line-beginning-position)))
+    ;; If L is at the end of a line, skip that line.
+    (unless (= l r)
+      (goto-char l)
+      (when (= l (line-end-position))
+        (cl-incf l)))
     ;; Indent the affected region.
     (unless (= l r) (indent-region l r))
     ;; `indent-region' doesn't do anything if R was the beginning of a line, so we indent manually there.
