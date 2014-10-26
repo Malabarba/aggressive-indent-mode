@@ -125,7 +125,8 @@ commands will NOT be followed by a re-indent."
 
 (defcustom comments-too nil
   "If non-nil, aggressively indent in comments as well."
-  :type 'boolean)
+  :type 'boolean
+  :package-version '(aggressive-indent . "0.3"))
 
 (defvar -internal-dont-indent-if
   '((memq this-command aggressive-indent-protected-commands)
@@ -133,8 +134,8 @@ commands will NOT be followed by a re-indent."
     buffer-read-only
     (null (buffer-modified-p))
     (string-match "\\`[[:blank:]]*\n?\\'" (thing-at-point 'line))
-    (and (aggressive-indent--in-comment-p)
-         (not aggressive-indent-comments-too)))
+    (and (not aggressive-indent-comments-too)
+         (aggressive-indent--in-comment-p)))
   "List of forms which prevent indentation when they evaluate to non-nil.
 This is for internal use only. For user customization, use
 `aggressive-indent-dont-indent-if' instead.")
