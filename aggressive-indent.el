@@ -123,12 +123,18 @@ commands will NOT be followed by a re-indent."
   :type '(repeat symbol)
   :package-version '(aggressive-indent . "0.1"))
 
+(defcustom comments-too nil
+  "If non-nil, aggressively indent in comments as well."
+  :type 'boolean)
+
 (defvar -internal-dont-indent-if
   '((memq this-command aggressive-indent-protected-commands)
     (region-active-p)
     buffer-read-only
     (null (buffer-modified-p))
-    (string-match "\\`[[:blank:]]*\n?\\'" (thing-at-point 'line)))
+    (string-match "\\`[[:blank:]]*\n?\\'" (thing-at-point 'line))
+    (and (aggressive-indent--in-comment-p)
+         (not aggressive-indent-comments-too)))
   "List of forms which prevent indentation when they evaluate to non-nil.
 This is for internal use only. For user customization, use
 `aggressive-indent-dont-indent-if' instead.")
@@ -302,6 +308,11 @@ Like `aggressive-indent-indent-region-and-on', but wrapped in a
   "Store the limits of each change that happens in the buffer."
   (push l changed-list-left)
   (push r changed-list-right))
+
+(defun -in-comment-p ()
+  "Return non-nil if point is inside a comment.
+Assumes that the syntax table is sufficient to find comments."
+  (nth 4 (syntax-ppss)))
 
 
 ;;; Minor modes
