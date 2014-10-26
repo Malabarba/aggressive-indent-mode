@@ -127,7 +127,8 @@ commands will NOT be followed by a re-indent."
   '((memq this-command aggressive-indent-protected-commands)
     (region-active-p)
     buffer-read-only
-    (null (buffer-modified-p)))
+    (null (buffer-modified-p))
+    (string-match "\\`[[:blank:]]*\n?\\'" (thing-at-point 'line)))
   "List of forms which prevent indentation when they evaluate to non-nil.
 This is for internal use only. For user customization, use
 `aggressive-indent-dont-indent-if' instead.")
