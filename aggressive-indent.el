@@ -152,7 +152,6 @@ If current major mode is derived from one of these,
 it will call `aggressive-indent-indent-region-and-on' after every
 buffer change."
   :type '(repeat symbol)
-  :group 'aggressive-indent
   :package-version '(aggressive-indent . "0.3"))
 
 (eval-after-load 'yasnippet
