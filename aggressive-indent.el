@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>
 ;; URL: http://github.com/Bruce-Connor/aggressive-indent-mode
-;; Version: 0.3
+;; Version: 0.3.1
 ;; Package-Requires: ((emacs "24.1") (names "0.5") (cl-lib "0.5"))
 ;; Keywords: indent lisp maint tools
 ;; Prefix: aggressive-indent
@@ -92,7 +92,7 @@
 ;;;###autoload
 (define-namespace aggressive-indent- :group indent
 
-(defconst version "0.3" "Version of the aggressive-indent.el package.")
+(defconst version "0.3.1" "Version of the aggressive-indent.el package.")
 (defun bug-report ()
   "Opens github issues page in a web browser. Please send any bugs you find.
 Please include your emacs and aggressive-indent versions."
