@@ -270,7 +270,7 @@ until nothing more happens."
       (indent-according-to-mode))
     ;; And then we indent each following line until nothing happens.
     (forward-line 1)
-    (while (/= (progn (skip-chars-forward "[:blank:]")
+    (while (/= (progn (skip-chars-forward "[:blank:]\n")
                       (point))
                (progn (indent-according-to-mode)
                       (point)))
