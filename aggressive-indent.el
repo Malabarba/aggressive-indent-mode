@@ -107,6 +107,7 @@ Please include this in your report!"
 (defcustom excluded-modes
   '(text-mode tabulated-list-mode special-mode
               minibuffer-inactive-mode
+              bibtex-mode
               yaml-mode jabber-chat-mode)
   "Modes in which `aggressive-indent-mode' should not be activated.
 This variable is only used if `global-aggressive-indent-mode' is
@@ -274,10 +275,11 @@ until nothing more happens."
       (indent-according-to-mode))
     ;; And then we indent each following line until nothing happens.
     (forward-line 1)
-    (while (/= (progn (skip-chars-forward "[:blank:]\n")
-                      (point))
-               (progn (indent-according-to-mode)
-                      (point)))
+    (while (and (null (eobp))
+                (/= (progn (skip-chars-forward "[:blank:]\n")
+                           (point))
+                    (progn (indent-according-to-mode)
+                           (point))))
       (forward-line 1))
     (goto-char p)))
 
