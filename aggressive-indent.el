@@ -104,6 +104,13 @@ Please include this in your report!"
 
 
 ;;; Start of actual Code:
+(defcustom dont-electric-modes '(ruby-mode)
+  "List of major-modes where `electric-indent-mode' shouold be disabled."
+  :type '(choice
+          (const :tag "Never use `electric-indent-mode'." t)
+          (repeat :tag "Major-modes to avoid `electric-indent-mode'" symbol))
+  :package-version '(aggressive-indent . "0.3.1"))
+
 (defcustom excluded-modes
   '(text-mode
     tabulated-list-mode
@@ -335,8 +342,11 @@ Assumes that the syntax table is sufficient to find comments."
                (or (cl-member-if #'derived-mode-p excluded-modes)
                    buffer-read-only))
           (mode -1)
-        (when (fboundp 'electric-indent-local-mode)
-          (electric-indent-local-mode 1))
+        ;; Should electric indent be ON or OFF?
+        (if (or (eq dont-electric-modes t)
+                (cl-member-if #'derived-mode-p dont-electric-modes))
+            (-local-electric nil)
+          (-local-electric t))
         (if (cl-member-if #'derived-mode-p modes-to-prefer-defun)
             (add-hook 'post-command-hook #'-softly-indent-defun nil 'local)
           (add-hook 'after-change-functions #'-keep-track-of-changes nil 'local)
@@ -345,6 +355,12 @@ Assumes that the syntax table is sufficient to find comments."
     (remove-hook 'after-change-functions #'-keep-track-of-changes 'local)
     (remove-hook 'post-command-hook #'-indent-if-changed 'local)
     (remove-hook 'post-command-hook #'-softly-indent-defun 'local)))
+
+(defun -local-electric (on)
+  "Turn `electric-indent-mode' on or off locally, as given by boolean ON."
+  (if (fboundp 'electric-indent-local-mode)
+      (electric-indent-local-mode (if on 1 -1))
+    (set (make-local-variable 'electric-indent-mode) on)))
 
 :autoload
 (define-globalized-minor-mode global-aggressive-indent-mode
