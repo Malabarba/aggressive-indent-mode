@@ -105,7 +105,7 @@ Please include this in your report!"
 
 ;;; Start of actual Code:
 (defcustom dont-electric-modes '(ruby-mode)
-  "List of major-modes where `electric-indent-mode' shouold be disabled."
+  "List of major-modes where `electric-indent-mode' should be disabled."
   :type '(choice
           (const :tag "Never use `electric-indent-mode'." t)
           (repeat :tag "Major-modes to avoid `electric-indent-mode'" symbol))
