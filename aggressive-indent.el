@@ -276,28 +276,30 @@ until nothing more happens."
   (let ((p (point-marker))
         was-begining-of-line)
     (set-marker-insertion-type p t)
-    (goto-char r)
-    (setq was-begining-of-line
-          (= r (line-beginning-position)))
-    ;; If L is at the end of a line, skip that line.
-    (unless (= l r)
-      (goto-char l)
-      (when (= l (line-end-position))
-        (cl-incf l)))
-    ;; Indent the affected region.
-    (unless (= l r) (indent-region l r))
-    ;; `indent-region' doesn't do anything if R was the beginning of a line, so we indent manually there.
-    (when was-begining-of-line
-      (indent-according-to-mode))
-    ;; And then we indent each following line until nothing happens.
-    (forward-line 1)
-    (while (and (null (eobp))
-                (/= (progn (skip-chars-forward "[:blank:]\n")
-                           (point))
-                    (progn (indent-according-to-mode)
-                           (point))))
-      (forward-line 1))
-    (goto-char p)))
+    (unwind-protect
+        (progn
+          (goto-char r)
+          (setq was-begining-of-line
+                (= r (line-beginning-position)))
+          ;; If L is at the end of a line, skip that line.
+          (unless (= l r)
+            (goto-char l)
+            (when (= l (line-end-position))
+              (cl-incf l)))
+          ;; Indent the affected region.
+          (unless (= l r) (indent-region l r))
+          ;; `indent-region' doesn't do anything if R was the beginning of a line, so we indent manually there.
+          (when was-begining-of-line
+            (indent-according-to-mode))
+          ;; And then we indent each following line until nothing happens.
+          (forward-line 1)
+          (while (and (null (eobp))
+                      (/= (progn (skip-chars-forward "[:blank:]\n")
+                                 (point))
+                          (progn (indent-according-to-mode)
+                                 (point))))
+            (forward-line 1)))
+      (goto-char p))))
 
 (defun -softly-indent-region-and-on (l r &rest _)
   "Indent current defun unobstrusively.
