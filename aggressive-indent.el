@@ -108,7 +108,7 @@ Please include this in your report!"
   "List of major-modes where `electric-indent-mode' should be disabled."
   :type '(choice
           (const :tag "Never use `electric-indent-mode'." t)
-          (repeat :tag "Major-modes to avoid `electric-indent-mode'" symbol))
+          (repeat :tag "List of major-modes to avoid `electric-indent-mode'." symbol))
   :package-version '(aggressive-indent . "0.3.1"))
 
 (defcustom excluded-modes
