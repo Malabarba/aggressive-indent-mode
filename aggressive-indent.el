@@ -89,6 +89,24 @@
 (require 'cl-lib)
 (require 'names)
 
+(defmacro aggressive-indent--do-softly (&rest body)
+  "Execute body unobstrusively.
+This means:
+ 1. Do nothing in several situations, specified by
+    `aggressive-indent-dont-indent-if' and
+    `aggressive-indent--internal-dont-indent-if'.
+ 2. Silence all messages.
+ 3. Never throw errors.
+Meant for use in functions which go in hooks."
+  (declare (debug t))
+  `(unless (or (run-hook-wrapped
+                'aggressive-indent--internal-dont-indent-if
+                #'eval)
+               (aggressive-indent--run-user-hooks))
+     (ignore-errors
+       (cl-letf (((symbol-function 'message) #'ignore))
+         ,@body))))
+
 ;;;###autoload
 (define-namespace aggressive-indent- :group indent
 
@@ -219,24 +237,6 @@ erroring again."
             (setq -has-errored t)
             (message -error-message er))))))
 
-(defmacro -do-softly (&rest body)
-  "Execute body unobstrusively.
-This means: do nothing if mark is active (to avoid deactivaing
-it), or if buffer is not modified (to avoid creating accidental
-modifications), or if any of the forms in
-`aggressive-indent-dont-indent-if' evaluates to non-nil.
-
-Also, never throw errors nor messages.
-Meant for use in functions which go in hooks."
-  (declare (debug t))
-  `(unless (or (run-hook-wrapped
-                'aggressive-indent--internal-dont-indent-if
-                #'eval)
-               (aggressive-indent--run-user-hooks))
-     (ignore-errors
-       (cl-letf (((symbol-function 'message) #'ignore))
-         ,@body))))
-
 :autoload
 (defun indent-defun ()
   "Indent current defun.
@@ -253,13 +253,7 @@ Throw an error if parentheses are unbalanced."
   "Indent current defun unobstrusively.
 Like `aggressive-indent-indent-defun', but wrapped in a
 `aggressive-indent--do-softly'."
-  (unless (or (run-hook-wrapped
-               'aggressive-indent--internal-dont-indent-if
-               #'eval)
-              (aggressive-indent--run-user-hooks))
-    (ignore-errors
-      (cl-letf (((symbol-function 'message) #'ignore))
-        (indent-defun)))))
+  (aggressive-indent--do-softly (indent-defun)))
 
 :autoload
 (defun indent-region-and-on (l r)
@@ -299,13 +293,7 @@ until nothing more happens."
   "Indent current defun unobstrusively.
 Like `aggressive-indent-indent-region-and-on', but wrapped in a
 `aggressive-indent--do-softly'."
-  (unless (or (run-hook-wrapped
-               'aggressive-indent--internal-dont-indent-if
-               #'eval)
-              (aggressive-indent--run-user-hooks))
-    (ignore-errors
-      (cl-letf (((symbol-function 'message) #'ignore))
-        (indent-region-and-on l r)))))
+  (aggressive-indent--do-softly (indent-region-and-on l r)))
 
 (defvar -changed-list-right nil
   "List of right limit of regions changed in the last command loop.")
