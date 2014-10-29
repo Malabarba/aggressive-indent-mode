@@ -313,26 +313,26 @@ Like `aggressive-indent-indent-region-and-on', but wrapped in a
       (cl-letf (((symbol-function 'message) #'ignore))
         (indent-region-and-on l r)))))
 
-(defvar changed-list-right nil
+(defvar -changed-list-right nil
   "List of right limit of regions changed in the last command loop.")
 
-(defvar changed-list-left nil
+(defvar -changed-list-left nil
   "List of left limit of regions changed in the last command loop.")
 
 (defun -indent-if-changed ()
   "Indent any region that changed in the last command loop."
   (let ((inhibit-modification-hooks t))
-    (when changed-list-left
+    (when -changed-list-left
       (-softly-indent-region-and-on
-       (apply #'min changed-list-left)
-       (apply #'max changed-list-right))
-      (setq changed-list-left nil
-            changed-list-right nil))))
+       (apply #'min -changed-list-left)
+       (apply #'max -changed-list-right))
+      (setq -changed-list-left nil
+            -changed-list-right nil))))
 
 (defun -keep-track-of-changes (l r &rest _)
   "Store the limits of each change that happens in the buffer."
-  (push l changed-list-left)
-  (push r changed-list-right))
+  (push l -changed-list-left)
+  (push r -changed-list-right))
 
 (defun -in-comment-p ()
   "Return non-nil if point is inside a comment.
