@@ -112,20 +112,25 @@ Please include this in your report!"
   :package-version '(aggressive-indent . "0.3.1"))
 
 (defcustom excluded-modes
-  '(text-mode
-    tabulated-list-mode
-    special-mode
-    minibuffer-inactive-mode
+  '(
     bibtex-mode
+    coffee-mode
     erc-mode
+    jabber-chat-mode
+    haml-mode
+    minibuffer-inactive-mode
+    python-mode
+    special-mode
+    tabulated-list-mode
+    text-mode
     yaml-mode
-    jabber-chat-mode)
+    )
   "Modes in which `aggressive-indent-mode' should not be activated.
 This variable is only used if `global-aggressive-indent-mode' is
 active. If the minor mode is turned on with the local command,
 `aggressive-indent-mode', this variable is ignored."
   :type '(repeat symbol)
-  :package-version '(aggressive-indent . "0.2"))
+  :package-version '(aggressive-indent . "0.3.1"))
 
 (defcustom protected-commands '(undo undo-tree-undo undo-tree-redo)
   "Commands after which indentation will NOT be performed.
