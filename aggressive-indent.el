@@ -187,12 +187,6 @@ buffer change."
      (add-to-list 'aggressive-indent--internal-dont-indent-if
                   'ac-completing)))
 
-(eval-after-load 'css-mode
-  '(add-hook
-    'css-mode-hook
-    (lambda () (unless defun-prompt-regexp
-            (setq-local defun-prompt-regexp "^[^[:blank:]].*")))))
-
 (defcustom dont-indent-if '()
   "List of variables and functions to prevent aggressive indenting.
 This variable is a list where each element is a lisp form.
