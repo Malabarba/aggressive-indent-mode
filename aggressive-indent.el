@@ -80,10 +80,11 @@
 ;;
 
 ;;; Change Log:
-;; 0.3 - 2014/10/23 - Implement a smarter engine for non-lisp modes.
-;; 0.2 - 2014/10/20 - Reactivate `electric-indent-mode'.
-;; 0.2 - 2014/10/19 - Add variable `aggressive-indent-dont-indent-if', so the user can prevent indentation.
-;; 0.1 - 2014/10/15 - Release.
+;; 0.3.1 - 2014/10/30 - Define new delete-backward bound to backspace.
+;; 0.3   - 2014/10/23 - Implement a smarter engine for non-lisp modes.
+;; 0.2   - 2014/10/20 - Reactivate `electric-indent-mode'.
+;; 0.2   - 2014/10/19 - Add variable `aggressive-indent-dont-indent-if', so the user can prevent indentation.
+;; 0.1   - 2014/10/15 - Release.
 ;;; Code:
 
 (require 'cl-lib)
@@ -322,10 +323,22 @@ Assumes that the syntax table is sufficient to find comments."
   (nth 4 (syntax-ppss)))
 
 
+;;; Keymap
+(defun delete-backward ()
+  "Either `delete-indentation' or call [backspace]."
+  (interactive)
+  (if (looking-back "^[[:blank:]]+")
+      (call-interactively 'delete-indentation)
+    (let ((mode nil))
+      (execute-kbd-macro [backspace]))))
+
+(define-key mode-map "\C-c\C-q" #'indent-defun)
+(define-key mode-map [backspace] #'delete-backward)
+
+
 ;;; Minor modes
 :autoload
-(define-minor-mode mode nil nil " =>"
-  '(("\C-c\C-q" . aggressive-indent-indent-defun))
+(define-minor-mode mode nil nil " =>" nil
   (if mode
       (if (and global-aggressive-indent-mode
                (or (cl-member-if #'derived-mode-p excluded-modes)
