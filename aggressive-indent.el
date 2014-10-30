@@ -254,7 +254,13 @@ Throw an error if parentheses are unbalanced."
   "Indent current defun unobstrusively.
 Like `aggressive-indent-indent-defun', but wrapped in a
 `aggressive-indent--do-softly'."
-  (aggressive-indent--do-softly (indent-defun)))
+  (unless (or (run-hook-wrapped
+               'aggressive-indent--internal-dont-indent-if
+               #'eval)
+              (aggressive-indent--run-user-hooks))
+    (ignore-errors
+      (cl-letf (((symbol-function 'message) #'ignore))
+        (indent-defun)))))
 
 :autoload
 (defun indent-region-and-on (l r)
@@ -294,7 +300,13 @@ until nothing more happens."
   "Indent current defun unobstrusively.
 Like `aggressive-indent-indent-region-and-on', but wrapped in a
 `aggressive-indent--do-softly'."
-  (aggressive-indent--do-softly (indent-region-and-on l r)))
+  (unless (or (run-hook-wrapped
+               'aggressive-indent--internal-dont-indent-if
+               #'eval)
+              (aggressive-indent--run-user-hooks))
+    (ignore-errors
+      (cl-letf (((symbol-function 'message) #'ignore))
+        (indent-region-and-on l r)))))
 
 (defvar -changed-list-right nil
   "List of right limit of regions changed in the last command loop.")
