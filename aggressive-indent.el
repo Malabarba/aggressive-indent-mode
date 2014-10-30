@@ -332,8 +332,8 @@ Assumes that the syntax table is sufficient to find comments."
     (let ((mode nil))
       (execute-kbd-macro [backspace]))))
 
-(define-key mode-map "\C-c\C-q" #'indent-defun)
-(define-key mode-map [backspace] #'delete-backward)
+;; (define-key mode-map "\C-c\C-q" #'indent-defun)
+;; (define-key mode-map [backspace] #'delete-backward)
 
 
 ;;; Minor modes
