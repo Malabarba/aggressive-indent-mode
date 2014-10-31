@@ -335,22 +335,14 @@ Assumes that the syntax table is sufficient to find comments."
   (nth 4 (syntax-ppss)))
 
 
-;;; Keymap
-(defun delete-backward ()
-  "Either `delete-indentation' or call [backspace]."
-  (interactive)
-  (if (looking-back "^[[:blank:]]+")
-      (call-interactively 'delete-indentation)
-    (let ((mode nil))
-      (execute-kbd-macro [backspace]))))
-
-;; (define-key mode-map "\C-c\C-q" #'indent-defun)
-;; (define-key mode-map [backspace] #'delete-backward)
-
-
 ;;; Minor modes
 :autoload
-(define-minor-mode mode nil nil " =>" nil
+(define-minor-mode mode nil nil " =>"
+  '(("" . aggressive-indent-indent-defun)
+    ([backspace] menu-item "maybe-delete-indentation" ignore
+     :filter (lambda (&optional _)
+               (when (looking-back "^[[:blank:]]+")
+                 #'delete-indentation))))
   (if mode
       (if (and global-aggressive-indent-mode
                (or (cl-member-if #'derived-mode-p excluded-modes)
