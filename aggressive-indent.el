@@ -171,7 +171,8 @@ commands will NOT be followed by a re-indent."
     (null (buffer-modified-p))
     (string-match "\\`[[:blank:]]*\n?\\'" (thing-at-point 'line))
     (and (not aggressive-indent-comments-too)
-         (aggressive-indent--in-comment-p)))
+         (aggressive-indent--in-comment-p))
+    (aggressive-indent--in-string-p))
   "List of forms which prevent indentation when they evaluate to non-nil.
 This is for internal use only. For user customization, use
 `aggressive-indent-dont-indent-if' instead.")
@@ -334,6 +335,12 @@ Like `aggressive-indent-indent-region-and-on', but wrapped in a
 Assumes that the syntax table is sufficient to find comments."
   (nth 4 (syntax-ppss)))
 
+(defun -in-string-p ()
+  "Return non-nil if point is inside a string.
+Assumes that the syntax table is sufficient for recognizing
+strings."
+  (nth 3 (syntax-ppss)))
+
 
 ;;; Minor modes
 :autoload
@@ -341,8 +348,14 @@ Assumes that the syntax table is sufficient to find comments."
   '(("" . aggressive-indent-indent-defun)
     ([backspace] menu-item "maybe-delete-indentation" ignore
      :filter (lambda (&optional _)
-               (when (looking-back "^[[:blank:]]+")
-                 #'delete-indentation))))
+               (when (and (looking-back "^[[:blank:]]+")
+			  ;; Wherever we don't want to indent, we probably also
+			  ;; want the default backspace behavior.
+			  (not (run-hook-wrapped
+				'aggressive-indent--internal-dont-indent-if
+				#'eval))
+			  (not (aggressive-indent--run-user-hooks)))
+		 #'delete-indentation))))
   (if mode
       (if (and global-aggressive-indent-mode
                (or (cl-member-if #'derived-mode-p excluded-modes)
