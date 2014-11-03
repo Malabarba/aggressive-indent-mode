@@ -104,9 +104,8 @@ Meant for use in functions which go in hooks."
                 'aggressive-indent--internal-dont-indent-if
                 #'eval)
                (aggressive-indent--run-user-hooks))
-     (ignore-errors
-       (cl-letf (((symbol-function 'message) #'ignore))
-         ,@body))))
+     (cl-letf (((symbol-function 'message) #'ignore))
+       (ignore-errors ,@body))))
 
 ;;;###autoload
 (define-namespace aggressive-indent- :group indent
@@ -259,9 +258,8 @@ Like `aggressive-indent-indent-defun', but wrapped in a
                'aggressive-indent--internal-dont-indent-if
                #'eval)
               (aggressive-indent--run-user-hooks))
-    (ignore-errors
-      (cl-letf (((symbol-function 'message) #'ignore))
-        (indent-defun)))))
+    (cl-letf (((symbol-function 'message) #'ignore))
+      (ignore-errors (indent-defun)))))
 
 :autoload
 (defun indent-region-and-on (l r)
@@ -305,9 +303,8 @@ Like `aggressive-indent-indent-region-and-on', but wrapped in a
                'aggressive-indent--internal-dont-indent-if
                #'eval)
               (aggressive-indent--run-user-hooks))
-    (ignore-errors
-      (cl-letf (((symbol-function 'message) #'ignore))
-        (indent-region-and-on l r)))))
+    (cl-letf (((symbol-function 'message) #'ignore))
+      (ignore-errors (indent-region-and-on l r)))))
 
 (defvar -changed-list-right nil
   "List of right limit of regions changed in the last command loop.")
