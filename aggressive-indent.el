@@ -134,9 +134,11 @@ Please include this in your report!"
   '(
     bibtex-mode
     coffee-mode
+    diff-mode
     erc-mode
     jabber-chat-mode
     haml-mode
+    makefile-mode
     minibuffer-inactive-mode
     python-mode
     special-mode
