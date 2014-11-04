@@ -42,7 +42,7 @@ If you don't want to install from Melpa, you can download it manually,
 place it in your `load-path` along with its two dependencies:
 
 - [Names](https://github.com/Bruce-Connor/names/)
-- and `cl-lib`.
+- and `cl-lib` (which you should already have if your `emacs-version` is at least 24.3).
 
 Then require it with:
 
