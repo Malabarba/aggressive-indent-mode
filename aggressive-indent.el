@@ -170,7 +170,7 @@ commands will NOT be followed by a re-indent."
     (region-active-p)
     buffer-read-only
     (null (buffer-modified-p))
-    (string-match "\\`[[:blank:]]*\n?\\'" (thing-at-point 'line))
+    (string-match "\\`[[:blank:]]*\n?\\'" (or (thing-at-point 'line) ""))
     (and (not aggressive-indent-comments-too)
          (aggressive-indent--in-comment-p))
     (aggressive-indent--in-string-p))
