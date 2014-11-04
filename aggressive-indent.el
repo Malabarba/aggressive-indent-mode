@@ -348,13 +348,13 @@ strings."
     ([backspace] menu-item "maybe-delete-indentation" ignore
      :filter (lambda (&optional _)
                (when (and (looking-back "^[[:blank:]]+")
-			  ;; Wherever we don't want to indent, we probably also
-			  ;; want the default backspace behavior.
-			  (not (run-hook-wrapped
-				'aggressive-indent--internal-dont-indent-if
-				#'eval))
-			  (not (aggressive-indent--run-user-hooks)))
-		 #'delete-indentation))))
+                          ;; Wherever we don't want to indent, we probably also
+                          ;; want the default backspace behavior.
+                          (not (run-hook-wrapped
+                                'aggressive-indent--internal-dont-indent-if
+                                #'eval))
+                          (not (aggressive-indent--run-user-hooks)))
+                 #'delete-indentation))))
   (if mode
       (if (and global-aggressive-indent-mode
                (or (cl-member-if #'derived-mode-p excluded-modes)
