@@ -133,6 +133,7 @@ Please include this in your report!"
   '(
     bibtex-mode
     coffee-mode
+    Custom-mode
     diff-mode
     erc-mode
     jabber-chat-mode
