@@ -142,7 +142,10 @@ Please include this in your report!"
     minibuffer-inactive-mode
     python-mode
     special-mode
+    shell-mode
+    eshell-mode
     tabulated-list-mode
+    term-mode
     text-mode
     yaml-mode
     )
