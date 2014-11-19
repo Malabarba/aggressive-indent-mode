@@ -138,11 +138,13 @@ Please include this in your report!"
     erc-mode
     jabber-chat-mode
     haml-mode
+    haskell-mode
     makefile-mode
     minibuffer-inactive-mode
     python-mode
     special-mode
     shell-mode
+    snippet-mode
     eshell-mode
     tabulated-list-mode
     term-mode
