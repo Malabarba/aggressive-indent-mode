@@ -368,7 +368,9 @@ strings."
   (if mode
       (if (and global-aggressive-indent-mode
                (or (cl-member-if #'derived-mode-p excluded-modes)
-                   buffer-read-only))
+                   buffer-read-only
+                   (and (boundp 'electric-indent-inhibit)
+                        electric-indent-inhibit)))
           (mode -1)
         ;; Should electric indent be ON or OFF?
         (if (or (eq dont-electric-modes t)
