@@ -1,4 +1,4 @@
-aggressive-indent-mode
+aggressive-indent-mode    [![Say Thank You](https://img.shields.io/gratipay/Malabarba.svg)](https://gratipay.com/Malabarba/)
 ======================
 
 `electric-indent-mode` is enough to keep your code nicely aligned when
