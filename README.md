@@ -15,8 +15,8 @@ than `electric-indent-mode`.
 - An example of Lisp mode (Emacs Lisp):
 ![Lisp Code Example](lisp-example.gif)
 
-- An example of non-Lisp mode (C++):
-![Cpp Code Example](cpp-example.gif)
+- An example of non-Lisp mode (C):
+![C Code Example](c-example.gif)
 
 ### Instructions ###
 
