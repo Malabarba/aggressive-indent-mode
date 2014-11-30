@@ -136,12 +136,14 @@ Please include this in your report!"
     conf-mode
     Custom-mode
     diff-mode
+    dos-mode
     erc-mode
     jabber-chat-mode
     haml-mode
     haskell-mode
     makefile-mode
     minibuffer-inactive-mode
+    netcmd-mode
     python-mode
     sass-mode
     slim-mode
