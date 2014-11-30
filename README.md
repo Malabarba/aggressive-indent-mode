@@ -36,7 +36,7 @@ every programming mode, you can do something like:
     (global-aggressive-indent-mode 1)
     (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
 
-### Manual Installation ###
+#### Manual Installation ####
 
 If you don't want to install from Melpa, you can download it manually,
 place it in your `load-path` along with its two dependencies:
@@ -47,3 +47,17 @@ place it in your `load-path` along with its two dependencies:
 Then require it with:
 
     (require 'aggressive-indent)
+
+### Customization ###
+
+The variable `aggressive-indent-dont-indent-if` lets you customize
+when you **don't** want indentation to happen.
+For instance, if you think it's annoying that lines jump around in
+`c++-mode` because you haven't typed the `;` yet, you could add the
+following clause:
+
+    (add-to-list
+     'aggressive-indent-dont-indent-if
+     '(and (derived-mode-p 'c++-mode)
+           (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
+                               (thing-at-point 'line)))))
