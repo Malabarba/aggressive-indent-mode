@@ -1,5 +1,6 @@
-aggressive-indent-mode    [![Say Thank You](https://img.shields.io/gratipay/Malabarba.svg)](https://gratipay.com/Malabarba/)
+aggressive-indent-mode    ()
 ======================
+<small>[Wanna say thank you?](https://gratipay.com/Malabarba/)</small>
 
 `electric-indent-mode` is enough to keep your code nicely aligned when
 all you do is type. However, once you start shifting blocks around,
