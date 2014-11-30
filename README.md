@@ -1,6 +1,6 @@
-aggressive-indent-mode    ()
+aggressive-indent-mode
 ======================
-<small>[Wanna say thank you?](https://gratipay.com/Malabarba/)</small>
+(_[Wanna say thank you?](https://gratipay.com/Malabarba/)_)
 
 `electric-indent-mode` is enough to keep your code nicely aligned when
 all you do is type. However, once you start shifting blocks around,
@@ -16,8 +16,8 @@ than `electric-indent-mode`.
 - An example of Lisp mode (Emacs Lisp):
 ![Lisp Code Example](lisp-example.gif)
 
-- An example of non-Lisp mode (C++):
-![Cpp Code Example](cpp-example.gif)
+- An example of non-Lisp mode (C):
+![C Code Example](c-example.gif)
 
 ### Instructions ###
 
