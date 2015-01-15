@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>
 ;; URL: http://github.com/Bruce-Connor/aggressive-indent-mode
-;; Version: 0.3.3
+;; Version: 0.3.4
 ;; Package-Requires: ((emacs "24.1") (names "0.5") (cl-lib "0.5"))
 ;; Keywords: indent lisp maint tools
 ;; Prefix: aggressive-indent
@@ -370,9 +370,7 @@ strings."
   (if mode
       (if (and global-aggressive-indent-mode
                (or (cl-member-if #'derived-mode-p excluded-modes)
-                   buffer-read-only
-                   (and (boundp 'electric-indent-inhibit)
-                        electric-indent-inhibit)))
+                   buffer-read-only))
           (mode -1)
         ;; Should electric indent be ON or OFF?
         (if (or (eq dont-electric-modes t)
