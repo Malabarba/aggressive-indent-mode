@@ -370,6 +370,7 @@ strings."
   (if mode
       (if (and global-aggressive-indent-mode
                (or (cl-member-if #'derived-mode-p excluded-modes)
+                   (memq major-mode '(text-mode fundamental-mode))
                    buffer-read-only))
           (mode -1)
         ;; Should electric indent be ON or OFF?
