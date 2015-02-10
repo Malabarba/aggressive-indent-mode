@@ -153,6 +153,7 @@ Please include this in your report!"
     eshell-mode
     tabulated-list-mode
     term-mode
+    TeX-output-mode
     text-mode
     yaml-mode
     )
