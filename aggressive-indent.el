@@ -142,6 +142,7 @@ Please include this in your report!"
     haml-mode
     haskell-mode
     makefile-mode
+    makefile-gmake-mode
     minibuffer-inactive-mode
     netcmd-mode
     python-mode
