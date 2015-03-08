@@ -132,6 +132,7 @@ Please include this in your report!"
 (defcustom excluded-modes
   '(
     bibtex-mode
+    cider-repl-mode
     coffee-mode
     conf-mode
     Custom-mode
