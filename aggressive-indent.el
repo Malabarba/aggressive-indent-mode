@@ -137,11 +137,13 @@ Please include this in your report!"
     conf-mode
     Custom-mode
     diff-mode
+    doc-view-mode
     dos-mode
     erc-mode
     jabber-chat-mode
     haml-mode
     haskell-mode
+    image-mode
     makefile-mode
     makefile-gmake-mode
     minibuffer-inactive-mode
