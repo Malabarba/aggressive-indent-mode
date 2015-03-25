@@ -88,7 +88,6 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'names)
 
 ;;;###autoload
 (define-namespace aggressive-indent- :group indent
