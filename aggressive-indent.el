@@ -188,9 +188,11 @@ commands will NOT be followed by a re-indent."
     (null (buffer-modified-p))
     (and (boundp 'smerge-mode) smerge-mode)
     (string-match "\\`[[:blank:]]*\n?\\'" (or (thing-at-point 'line) ""))
-    (and (not aggressive-indent-comments-too)
-         (aggressive-indent--in-comment-p))
-    (aggressive-indent--in-string-p))
+    (let ((sp (syntax-ppss)))
+      ;; Comments.
+      (or (and (not aggresive-indent-comments-too) (elt sp 4))
+          ;; Strings.
+          (elt sp 3))))
   "List of forms which prevent indentation when they evaluate to non-nil.
 This is for internal use only. For user customization, use
 `aggressive-indent-dont-indent-if' instead.")
@@ -345,17 +347,6 @@ Like `aggressive-indent-indent-region-and-on', but wrapped in a
   "Store the limits of each change that happens in the buffer."
   (push l -changed-list-left)
   (push r -changed-list-right))
-
-(defun -in-comment-p ()
-  "Return non-nil if point is inside a comment.
-Assumes that the syntax table is sufficient to find comments."
-  (nth 4 (syntax-ppss)))
-
-(defun -in-string-p ()
-  "Return non-nil if point is inside a string.
-Assumes that the syntax table is sufficient for recognizing
-strings."
-  (nth 3 (syntax-ppss)))
 
 
 ;;; Minor modes
