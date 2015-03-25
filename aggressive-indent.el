@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2014 Artur Malabarba <bruce.connor.am@gmail.com>
 
-;; Author: Artur Malabarba <bruce.connor.am@gmail.com>
-;; URL: http://github.com/Bruce-Connor/aggressive-indent-mode
+;; Author: Artur Malabarba <emacs@endlessparentheses.com>
+;; URL: http://github.com/Malabarba/aggressive-indent-mode
 ;; Version: 0.3.5
 ;; Package-Requires: ((emacs "24.1") (names "0.5") (cl-lib "0.5"))
 ;; Keywords: indent lisp maint tools
