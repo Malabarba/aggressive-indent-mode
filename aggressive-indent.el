@@ -90,23 +90,6 @@
 (require 'cl-lib)
 (require 'names)
 
-(defmacro aggressive-indent--do-softly (&rest body)
-  "Execute BODY unobstrusively.
-This means:
- 1. Do nothing in several situations, specified by
-    `aggressive-indent-dont-indent-if' and
-    `aggressive-indent--internal-dont-indent-if'.
- 2. Silence all messages.
- 3. Never throw errors.
-Meant for use in functions which go in hooks."
-  (declare (debug t))
-  `(unless (or (run-hook-wrapped
-                'aggressive-indent--internal-dont-indent-if
-                #'eval)
-               (aggressive-indent--run-user-hooks))
-     (cl-letf (((symbol-function 'message) #'ignore))
-       (ignore-errors ,@body))))
-
 ;;;###autoload
 (define-namespace aggressive-indent- :group indent
 
