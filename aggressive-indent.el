@@ -90,16 +90,17 @@
 (require 'cl-lib)
 
 ;;;###autoload
-(define-namespace aggressive-indent- :group indent
+(define-namespace aggressive-indent-
+:group indent
 
-(defconst version "0.3.5" "Version of the aggressive-indent.el package.")
+(defconst version (lm-version) "Version of the aggressive-indent.el package.")
 (defun bug-report ()
   "Opens github issues page in a web browser.  Please send any bugs you find.
-Please include your Emacs and aggressive-indent versions."
+Please include your Emacs and `aggressive-indent' versions."
   (interactive)
   (message "Your `aggressive-indent-version' is: %s, and your emacs version is: %s.
 Please include this in your report!"
-           version emacs-version)
+    version emacs-version)
   (browse-url "https://github.com/Bruce-Connor/aggressive-indent-mode/issues/new"))
 
 
@@ -237,10 +238,9 @@ erroring again."
        (condition-case er
            (prog1 (eval (cons 'or dont-indent-if))
              (setq -has-errored nil))
-         (error
-          (unless -has-errored
-            (setq -has-errored t)
-            (message -error-message er))))))
+         (error (unless -has-errored
+                  (setq -has-errored t)
+                  (message -error-message er))))))
 
 :autoload
 (defun indent-defun ()
@@ -256,8 +256,8 @@ Throw an error if parentheses are unbalanced."
 
 (defun -softly-indent-defun ()
   "Indent current defun unobstrusively.
-Like `aggressive-indent-indent-defun', but wrapped in a
-`aggressive-indent--do-softly'."
+Like `aggressive-indent-indent-defun', but without errors or
+messages."
   (unless (or (run-hook-wrapped
                'aggressive-indent--internal-dont-indent-if
                #'eval)
