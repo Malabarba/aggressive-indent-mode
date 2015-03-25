@@ -93,7 +93,10 @@
 (define-namespace aggressive-indent-
 :group indent
 
-(defconst version (lm-version) "Version of the aggressive-indent.el package.")
+(defconst version (eval-when-compile
+                    (require 'lisp-mnt)
+                    (lm-version))
+  "Version of the aggressive-indent.el package.")
 (defun bug-report ()
   "Opens github issues page in a web browser.  Please send any bugs you find.
 Please include your Emacs and `aggressive-indent' versions."
