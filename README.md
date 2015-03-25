@@ -1,6 +1,5 @@
-aggressive-indent-mode
+aggressive-indent-mode [![Melpa](http://melpa.org/packages/aggressive-indent-badge.svg)](http://melpa.org/#/aggressive-indent) [![Melpa-Stable](http://stable.melpa.org/packages/aggressive-indent-badge.svg)](http://stable.melpa.org/#/aggressive-indent)
 ======================
-(_[Wanna say thank you?](https://gratipay.com/Malabarba/)_)
 
 `electric-indent-mode` is enough to keep your code nicely aligned when
 all you do is type. However, once you start shifting blocks around,
@@ -62,3 +61,7 @@ following clause:
      '(and (derived-mode-p 'c++-mode)
            (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
                                (thing-at-point 'line)))))
+
+## Contribute ##
+
+[![Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/Malabarba) 
