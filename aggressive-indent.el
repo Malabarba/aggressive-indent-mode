@@ -176,7 +176,7 @@ commands will NOT be followed by a re-indent."
     (string-match "\\`[[:blank:]]*\n?\\'" (or (thing-at-point 'line) ""))
     (let ((sp (syntax-ppss)))
       ;; Comments.
-      (or (and (not aggresive-indent-comments-too) (elt sp 4))
+      (or (and (not aggressive-indent-comments-too) (elt sp 4))
           ;; Strings.
           (elt sp 3))))
   "List of forms which prevent indentation when they evaluate to non-nil.
