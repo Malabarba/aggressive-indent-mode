@@ -88,6 +88,7 @@
 ;;; Code:
 
 (require 'cl-lib)
+(eval-when-compile (require 'names))
 
 ;;;###autoload
 (define-namespace aggressive-indent-
