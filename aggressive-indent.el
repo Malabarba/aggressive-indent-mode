@@ -118,6 +118,7 @@ Please include this in your report!"
     bibtex-mode
     cider-repl-mode
     coffee-mode
+    comint-mode
     conf-mode
     Custom-mode
     diff-mode
