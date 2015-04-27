@@ -1,4 +1,4 @@
-;;; aggressive-indent.el --- Minor mode to aggressively keep your code always indented
+;;; aggressive-indent.el --- Minor mode to aggressively keep your code always indented  -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2014 Free Software Foundation, Inc.
 
