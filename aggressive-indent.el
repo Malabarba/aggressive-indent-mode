@@ -213,6 +213,10 @@ change."
   '(when (boundp 'ac-completing)
      (add-to-list 'aggressive-indent--internal-dont-indent-if
                   'ac-completing)))
+(eval-after-load 'iedit
+  '(when (boundp 'iedit-mode)
+     (add-to-list 'aggressive-indent--internal-dont-indent-if
+                  'iedit-mode)))
 
 (defcustom dont-indent-if '()
   "List of variables and functions to prevent aggressive indenting.
