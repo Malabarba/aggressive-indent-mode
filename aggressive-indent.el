@@ -217,6 +217,11 @@ change."
   '(when (boundp 'iedit-mode)
      (add-to-list 'aggressive-indent--internal-dont-indent-if
                   'iedit-mode)))
+(eval-after-load 'coq
+  '(add-to-list 'aggressive-indent--internal-dont-indent-if
+                '(and (derived-mode-p 'coq-mode)
+                      (not (string-match "\\.[[:space:]]*$"
+                                         (thing-at-point 'line))))))
 
 (defcustom dont-indent-if '()
   "List of variables and functions to prevent aggressive indenting.
@@ -249,28 +254,34 @@ erroring again."
                   (setq -has-errored t)
                   (message -error-message er))))))
 
+
 :autoload
-(defun indent-defun ()
+(defun indent-defun (&optional l r)
   "Indent current defun.
-Throw an error if parentheses are unbalanced."
+Throw an error if parentheses are unbalanced.
+If L and R are provided, use them for finding the start and end of defun."
   (interactive)
   (let ((p (point-marker)))
     (set-marker-insertion-type p t)
     (indent-region
-     (save-excursion (beginning-of-defun 1) (point))
-     (save-excursion (end-of-defun 1) (point)))
+     (save-excursion
+       (when l (goto-char l))
+       (beginning-of-defun 1) (point))
+     (save-excursion
+       (when r (goto-char r))
+       (end-of-defun 1) (point)))
     (goto-char p)))
 
-(defun -softly-indent-defun ()
+(defun -softly-indent-defun (&optional l r)
   "Indent current defun unobstrusively.
 Like `aggressive-indent-indent-defun', but without errors or
-messages."
+messages.  L and R passed to `aggressive-indent-indent-defun'."
   (unless (or (run-hook-wrapped
                'aggressive-indent--internal-dont-indent-if
                #'eval)
               (aggressive-indent--run-user-hooks))
     (cl-letf (((symbol-function 'message) #'ignore))
-      (ignore-errors (indent-defun)))))
+      (ignore-errors (indent-defun l r)))))
 
 :autoload
 (defun indent-region-and-on (l r)
@@ -298,12 +309,19 @@ until nothing more happens."
             (indent-according-to-mode))
           ;; And then we indent each following line until nothing happens.
           (forward-line 1)
-          (while (and (null (eobp))
-                      (/= (progn (skip-chars-forward "[:blank:]\n")
-                                 (point))
-                          (progn (indent-according-to-mode)
-                                 (point))))
-            (forward-line 1)))
+          (skip-chars-forward "[:blank:]\n")
+          (let* ((eod (ignore-errors
+                        (save-excursion (end-of-defun)
+                                        (point-marker))))
+                 (point-limit (if (and eod (< (point) eod))
+                                  eod (point-max-marker))))
+            (while (and (null (eobp))
+                        (< (point) point-limit)
+                        (/= (point)
+                            (progn (indent-according-to-mode)
+                                   (point))))
+              (forward-line 1)
+              (skip-chars-forward "[:blank:]\n"))))
       (goto-char p))))
 
 (defun -softly-indent-region-and-on (l r &rest _)
@@ -317,26 +335,26 @@ or messages."
     (cl-letf (((symbol-function 'message) #'ignore))
       (ignore-errors (indent-region-and-on l r)))))
 
-(defvar -changed-list-right nil
-  "List of right limit of regions changed in the last command loop.")
-
-(defvar -changed-list-left nil
-  "List of left limit of regions changed in the last command loop.")
+(defvar -changed-list nil
+  "List of (left right) limit of regions changed in the last command loop.")
 
 (defun -indent-if-changed ()
   "Indent any region that changed in the last command loop."
-  (let ((inhibit-modification-hooks t))
-    (when -changed-list-left
-      (-softly-indent-region-and-on
-       (apply #'min -changed-list-left)
-       (apply #'max -changed-list-right))
-      (setq -changed-list-left nil
-            -changed-list-right nil))))
+  (when -changed-list
+    (while-no-input
+      (let ((inhibit-modification-hooks t)
+            (inhibit-point-motion-hooks t)
+            (indent-function
+             (if (cl-member-if #'derived-mode-p modes-to-prefer-defun)
+                 #'-softly-indent-defun
+               #'-softly-indent-region-and-on)))
+        (while -changed-list
+          (apply indent-function (car -changed-list))
+          (setq -changed-list (cdr -changed-list)))))))
 
 (defun -keep-track-of-changes (l r &rest _)
   "Store the limits (L and R) of each change in the buffer."
-  (push l -changed-list-left)
-  (push r -changed-list-right))
+  (push (list l r) -changed-list))
 
 
 ;;; Minor modes
@@ -365,10 +383,9 @@ or messages."
                 (cl-member-if #'derived-mode-p dont-electric-modes))
             (-local-electric nil)
           (-local-electric t))
-        (if (cl-member-if #'derived-mode-p modes-to-prefer-defun)
-            (add-hook 'post-command-hook #'-softly-indent-defun nil 'local)
-          (add-hook 'after-change-functions #'-keep-track-of-changes nil 'local)
-          (add-hook 'post-command-hook #'-indent-if-changed nil 'local)))
+        (add-hook 'after-change-functions #'-keep-track-of-changes nil 'local)
+        ;; (add-hook 'post-command-hook #'-softly-indent-defun nil 'local)
+        (add-hook 'post-command-hook #'-indent-if-changed nil 'local))
     ;; Clean the hooks
     (remove-hook 'after-change-functions #'-keep-track-of-changes 'local)
     (remove-hook 'post-command-hook #'-indent-if-changed 'local)
