@@ -7,7 +7,7 @@ transposing lines, or slurping and barfing sexps, indentation is bound
 to go wrong.
 
 **`aggressive-indent-mode`** is a minor mode that keeps your code **always**
-indented. It reindents after every command, making it more reliable
+indented. It reindents after every change, making it more reliable
 than `electric-indent-mode`.
 
 ### Demonstration ###
