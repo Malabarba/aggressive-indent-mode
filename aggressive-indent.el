@@ -173,7 +173,15 @@ commands will NOT be followed by a re-indent."
     buffer-read-only
     (null (buffer-modified-p))
     (and (boundp 'smerge-mode) smerge-mode)
-    (string-match "\\`[[:blank:]]*\n?\\'" (or (thing-at-point 'line) ""))
+    (let ((line (thing-at-point 'line)))
+      (when (stringp line)
+        (or (string-match "\\`[[:blank:]]*\n?\\'" line)
+            ;; If the user is starting to type a comment.
+            (and (stringp comment-start)
+                 (string-match (concat "\\`[[:blank:]]*"
+                                       (substring comment-start 0 1)
+                                       "[[:blank:]]*$")
+                               line)))))
     (let ((sp (syntax-ppss)))
       ;; Comments.
       (or (and (not aggressive-indent-comments-too) (elt sp 4))
