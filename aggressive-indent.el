@@ -171,6 +171,7 @@ commands will NOT be followed by a re-indent."
   '((memq this-command aggressive-indent-protected-commands)
     (region-active-p)
     buffer-read-only
+    undo-in-progress
     (null (buffer-modified-p))
     (and (boundp 'smerge-mode) smerge-mode)
     (let ((line (thing-at-point 'line)))
