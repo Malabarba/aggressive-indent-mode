@@ -325,10 +325,15 @@ until nothing more happens."
                  (point-limit (if (and eod (< (point) eod))
                                   eod (point-max-marker))))
             (while (and (null (eobp))
-                        (< (point) point-limit)
-                        (/= (point)
-                            (progn (indent-according-to-mode)
-                                   (point))))
+                        (let ((op (point))
+                              (np (progn (indent-according-to-mode)
+                                         (point))))
+                          ;; As long as we're indenting things to the
+                          ;; left, keep indenting.
+                          (or (< np op)
+                              ;; If we're indenting to the right, or
+                              ;; not at all, stop at the limit.
+                              (< (point) point-limit))))
               (forward-line 1)
               (skip-chars-forward "[:blank:]\n"))))
       (goto-char p))))
