@@ -289,12 +289,8 @@ If L and R are provided, use them for finding the start and end of defun."
   "Indent current defun unobstrusively.
 Like `aggressive-indent-indent-defun', but without errors or
 messages.  L and R passed to `aggressive-indent-indent-defun'."
-  (unless (or (run-hook-wrapped
-               'aggressive-indent--internal-dont-indent-if
-               #'eval)
-              (aggressive-indent--run-user-hooks))
-    (cl-letf (((symbol-function 'message) #'ignore))
-      (ignore-errors (indent-defun l r)))))
+  (cl-letf (((symbol-function 'message) #'ignore))
+    (ignore-errors (indent-defun l r))))
 
 :autoload
 (defun indent-region-and-on (l r)
@@ -346,12 +342,8 @@ until nothing more happens."
   "Indent region between L and R, and a bit more.
 Like `aggressive-indent-indent-region-and-on', but without errors
 or messages."
-  (unless (or (run-hook-wrapped
-               'aggressive-indent--internal-dont-indent-if
-               #'eval)
-              (aggressive-indent--run-user-hooks))
-    (cl-letf (((symbol-function 'message) #'ignore))
-      (ignore-errors (indent-region-and-on l r)))))
+  (cl-letf (((symbol-function 'message) #'ignore))
+    (ignore-errors (indent-region-and-on l r))))
 
 (defvar -changed-list nil
   "List of (left right) limit of regions changed in the last command loop.")
@@ -359,16 +351,18 @@ or messages."
 (defun -indent-if-changed ()
   "Indent any region that changed in the last command loop."
   (when -changed-list
-    (while-no-input
-      (let ((inhibit-modification-hooks t)
-            (inhibit-point-motion-hooks t)
-            (indent-function
-             (if (cl-member-if #'derived-mode-p modes-to-prefer-defun)
-                 #'-softly-indent-defun
-               #'-softly-indent-region-and-on)))
-        (while -changed-list
-          (apply indent-function (car -changed-list))
-          (setq -changed-list (cdr -changed-list)))))))
+    (unless (or (run-hook-wrapped 'aggressive-indent--internal-dont-indent-if #'eval)
+                (aggressive-indent--run-user-hooks))
+      (while-no-input
+        (let ((inhibit-modification-hooks t)
+              (inhibit-point-motion-hooks t)
+              (indent-function
+               (if (cl-member-if #'derived-mode-p modes-to-prefer-defun)
+                   #'-softly-indent-defun
+                 #'-softly-indent-region-and-on)))
+          (while -changed-list
+            (apply indent-function (car -changed-list))
+            (setq -changed-list (cdr -changed-list))))))))
 
 (defun -keep-track-of-changes (l r &rest _)
   "Store the limits (L and R) of each change in the buffer."
