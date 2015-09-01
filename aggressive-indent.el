@@ -222,6 +222,10 @@ change."
   '(when (boundp 'ac-completing)
      (add-to-list 'aggressive-indent--internal-dont-indent-if
                   'ac-completing)))
+(eval-after-load 'multiple-cursors-core
+  '(when (boundp 'multiple-cursors-mode)
+     (add-to-list 'aggressive-indent--internal-dont-indent-if
+                  'multiple-cursors-mode)))
 (eval-after-load 'iedit
   '(when (boundp 'iedit-mode)
      (add-to-list 'aggressive-indent--internal-dont-indent-if
