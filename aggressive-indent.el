@@ -368,7 +368,8 @@ or messages."
 
 (defun aggressive-indent--keep-track-of-changes (l r &rest _)
   "Store the limits (L and R) of each change in the buffer."
-  (push (list l r) aggressive-indent--changed-list))
+  (when aggressive-indent-mode
+    (push (list l r) aggressive-indent--changed-list)))
 
 ;;; Minor modes
 ;;;###autoload
