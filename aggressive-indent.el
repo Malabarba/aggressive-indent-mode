@@ -101,11 +101,13 @@ Please include your Emacs and `aggressive-indent' versions."
   (message "Your `aggressive-indent-version' is: %s, and your emacs version is: %s.
 Please include this in your report!"
            (eval-when-compile
-             (require 'lisp-mnt)
-             (require 'find-func)
-             (lm-version (find-library-name "aggressive-indent")))
+             (ignore-errors
+               (require 'lisp-mnt)
+               (lm-version)))
            emacs-version)
   (browse-url "https://github.com/Bruce-Connor/aggressive-indent-mode/issues/new"))
+
+(defvar aggressive-indent-mode)
 
 ;;; Configuring indentarion
 (defcustom aggressive-indent-dont-electric-modes '(ruby-mode)
