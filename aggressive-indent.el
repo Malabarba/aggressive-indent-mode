@@ -321,7 +321,7 @@ until nothing more happens."
             (indent-according-to-mode))
           ;; And then we indent each following line until nothing happens.
           (forward-line 1)
-          (skip-chars-forward "[:blank:]\n")
+          (skip-chars-forward "[:blank:]\n\r\xc")
           (let* ((eod (ignore-errors
                         (save-excursion (end-of-defun)
                                         (point-marker))))
@@ -338,7 +338,7 @@ until nothing more happens."
                               ;; not at all, stop at the limit.
                               (< (point) point-limit))))
               (forward-line 1)
-              (skip-chars-forward "[:blank:]\n"))))
+              (skip-chars-forward "[:blank:]\n\r\xc"))))
       (goto-char p))))
 
 (defun aggressive-indent--softly-indent-region-and-on (l r &rest _)
