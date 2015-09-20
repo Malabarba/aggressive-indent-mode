@@ -157,7 +157,7 @@ active.  If the minor mode is turned on with the local command,
   :type '(repeat symbol)
   :package-version '(aggressive-indent . "0.3.1"))
 
-(defcustom aggressive-indent-protected-commands '(undo undo-tree-undo undo-tree-redo)
+(defcustom aggressive-indent-protected-commands '(undo undo-tree-undo undo-tree-redo whitespace-cleanup)
   "Commands after which indentation will NOT be performed.
 Aggressive indentation could break things like `undo' by locking
 the user in a loop, so this variable is used to control which
@@ -306,19 +306,16 @@ until nothing more happens."
     (set-marker-insertion-type p t)
     (unwind-protect
         (progn
-          (goto-char r)
-          (setq was-begining-of-line
-                (= r (line-beginning-position)))
+          (unless (= l r)
+            (when (= (char-before r) ?\n)
+              (cl-decf r)))
           ;; If L is at the end of a line, skip that line.
           (unless (= l r)
-            (goto-char l)
-            (when (= l (line-end-position))
+            (when (= (char-after l) ?\n)
               (cl-incf l)))
           ;; Indent the affected region.
+          (goto-char r)
           (unless (= l r) (indent-region l r))
-          ;; `indent-region' doesn't do anything if R was the beginning of a line, so we indent manually there.
-          (when was-begining-of-line
-            (indent-according-to-mode))
           ;; And then we indent each following line until nothing happens.
           (forward-line 1)
           (skip-chars-forward "[:blank:]\n\r\xc")
