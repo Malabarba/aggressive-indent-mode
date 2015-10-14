@@ -3,8 +3,8 @@
 ;; Copyright (C) 2014 Free Software Foundation, Inc.
 
 ;; Author: Artur Malabarba <emacs@endlessparentheses.com>
-;; URL: http://github.com/Malabarba/aggressive-indent-mode
-;; Version: 1.4
+;; URL: https://github.com/Malabarba/aggressive-indent-mode
+;; Version: 1.4.1
 ;; Package-Requires: ((emacs "24.1") (cl-lib "0.5"))
 ;; Keywords: indent lisp maint tools
 ;; Prefix: aggressive-indent
@@ -231,6 +231,10 @@ This is for internal use only.  For user customization, use
      (add-to-list 'aggressive-indent--internal-dont-indent-if
                   'multiple-cursors-mode)))
 (eval-after-load 'iedit
+  '(when (boundp 'iedit-mode)
+     (add-to-list 'aggressive-indent--internal-dont-indent-if
+                  'iedit-mode)))
+(eval-after-load 'evil
   '(when (boundp 'iedit-mode)
      (add-to-list 'aggressive-indent--internal-dont-indent-if
                   'iedit-mode)))
