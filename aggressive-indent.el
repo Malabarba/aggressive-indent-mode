@@ -92,6 +92,7 @@
 (defgroup aggressive-indent nil
   "Customization group for aggressive-indent."
   :prefix "aggressive-indent-"
+  :group 'electricity
   :group 'indent)
 
 (defun aggressive-indent-bug-report ()
