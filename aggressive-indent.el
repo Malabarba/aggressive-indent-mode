@@ -361,6 +361,7 @@ or messages."
     (unless (or (run-hook-wrapped 'aggressive-indent--internal-dont-indent-if #'eval)
                 (aggressive-indent--run-user-hooks))
       (while-no-input
+        (sit-for 0)
         (let ((inhibit-modification-hooks t)
               (inhibit-point-motion-hooks t)
               (indent-function
