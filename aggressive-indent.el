@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <emacs@endlessparentheses.com>
 ;; URL: https://github.com/Malabarba/aggressive-indent-mode
-;; Version: 1.4.1
+;; Version: 1.4.2
 ;; Package-Requires: ((emacs "24.1") (cl-lib "0.5"))
 ;; Keywords: indent lisp maint tools
 ;; Prefix: aggressive-indent
@@ -106,7 +106,7 @@ Please include this in your report!"
                (require 'lisp-mnt)
                (lm-version)))
            emacs-version)
-  (browse-url "https://github.com/Bruce-Connor/aggressive-indent-mode/issues/new"))
+  (browse-url "https://github.com/Malabarba/aggressive-indent-mode/issues/new"))
 
 (defvar aggressive-indent-mode)
 
