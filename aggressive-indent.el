@@ -381,7 +381,7 @@ or messages."
 ;;;###autoload
 (define-minor-mode aggressive-indent-mode
   nil nil " =>"
-  '(("" . aggressive-indent-indent-defun)
+  '(((kbd "C-c C-q") . aggressive-indent-indent-defun)
     ([backspace]
      menu-item "maybe-delete-indentation" ignore :filter
      (lambda (&optional _)
