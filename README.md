@@ -39,10 +39,8 @@ every programming mode, you can do something like:
 #### Manual Installation ####
 
 If you don't want to install from Melpa, you can download it manually,
-place it in your `load-path` along with its two dependencies:
-
-- [Names](https://github.com/Bruce-Connor/names/)
-- and `cl-lib` (which you should already have if your `emacs-version` is at least 24.3).
+place it in your `load-path` along with its dependency `cl-lib` (which
+you should already have if your `emacs-version` is at least 24.3).
 
 Then require it with:
 
