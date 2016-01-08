@@ -352,19 +352,21 @@ or messages."
 (defun aggressive-indent--indent-if-changed ()
   "Indent any region that changed in the last command loop."
   (when aggressive-indent--changed-list
-    (unless (or (run-hook-wrapped 'aggressive-indent--internal-dont-indent-if #'eval)
-                (aggressive-indent--run-user-hooks))
-      (while-no-input
-        (redisplay)
-        (let ((inhibit-modification-hooks t)
-              (inhibit-point-motion-hooks t)
-              (indent-function
-               (if (cl-member-if #'derived-mode-p aggressive-indent-modes-to-prefer-defun)
-                   #'aggressive-indent--softly-indent-defun #'aggressive-indent--softly-indent-region-and-on)))
-          (while aggressive-indent--changed-list
-            (apply indent-function (car aggressive-indent--changed-list))
-            (setq aggressive-indent--changed-list
-                  (cdr aggressive-indent--changed-list))))))))
+    (save-excursion
+      (save-selected-window
+        (unless (or (run-hook-wrapped 'aggressive-indent--internal-dont-indent-if #'eval)
+                    (aggressive-indent--run-user-hooks))
+          (while-no-input
+            (redisplay)
+            (let ((inhibit-modification-hooks t)
+                  (inhibit-point-motion-hooks t)
+                  (indent-function
+                   (if (cl-member-if #'derived-mode-p aggressive-indent-modes-to-prefer-defun)
+                       #'aggressive-indent--softly-indent-defun #'aggressive-indent--softly-indent-region-and-on)))
+              (while aggressive-indent--changed-list
+                (apply indent-function (car aggressive-indent--changed-list))
+                (setq aggressive-indent--changed-list
+                      (cdr aggressive-indent--changed-list))))))))))
 
 (defun aggressive-indent--keep-track-of-changes (l r &rest _)
   "Store the limits (L and R) of each change in the buffer."
