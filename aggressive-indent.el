@@ -334,7 +334,7 @@ until nothing more happens."
                               ;; not at all, stop at the limit.
                               (< (point) point-limit))))
               (forward-line 1)
-              (skip-chars-forward "[:blank:]\n\r\xc"))))
+              (skip-chars-forward "[:blank:]\n\r\f"))))
       (goto-char p))))
 
 (defun aggressive-indent--softly-indent-region-and-on (l r &rest _)
