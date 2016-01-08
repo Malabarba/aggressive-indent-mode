@@ -79,12 +79,6 @@
 ;; GNU General Public License for more details.
 ;;
 
-;;; Change Log:
-;; 0.3.1 - 2014/10/30 - Define new delete-backward bound to backspace.
-;; 0.3   - 2014/10/23 - Implement a smarter engine for non-lisp modes.
-;; 0.2   - 2014/10/20 - Reactivate `electric-indent-mode'.
-;; 0.2   - 2014/10/19 - Add variable `aggressive-indent-dont-indent-if', so the user can prevent indentation.
-;; 0.1   - 2014/10/15 - Release.
 ;;; Code:
 
 (require 'cl-lib)
