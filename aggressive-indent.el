@@ -127,6 +127,7 @@ Please include this in your report!"
     jabber-chat-mode
     haml-mode
     haskell-mode
+    haskell-interactive-mode
     image-mode
     makefile-mode
     makefile-gmake-mode
