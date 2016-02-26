@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <emacs@endlessparentheses.com>
 ;; URL: https://github.com/Malabarba/aggressive-indent-mode
-;; Version: 1.5
+;; Version: 1.5.1
 ;; Package-Requires: ((emacs "24.1") (cl-lib "0.5"))
 ;; Keywords: indent lisp maint tools
 ;; Prefix: aggressive-indent
@@ -190,14 +190,13 @@ change."
     (null (buffer-modified-p))
     (and (boundp 'smerge-mode) smerge-mode)
     (let ((line (thing-at-point 'line)))
-      (when (stringp line)
-        (or (string-match "\\`[[:blank:]]*\n?\\'" line)
-            ;; If the user is starting to type a comment.
-            (and (stringp comment-start)
-                 (string-match (concat "\\`[[:blank:]]*"
-                                       (substring comment-start 0 1)
-                                       "[[:blank:]]*$")
-                               line)))))
+      (and (stringp line)
+           ;; If the user is starting to type a comment.
+           (stringp comment-start)
+           (string-match (concat "\\`[[:blank:]]*"
+                                 (substring comment-start 0 1)
+                                 "[[:blank:]]*$")
+                         line)))
     (let ((sp (syntax-ppss)))
       ;; Comments.
       (or (and (not aggressive-indent-comments-too) (elt sp 4))
