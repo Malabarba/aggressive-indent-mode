@@ -349,9 +349,12 @@ or messages."
   "List of (left right) limit of regions changed in the last command loop.")
 (make-variable-buffer-local 'aggressive-indent--changed-list)
 
+(defvar-local aggressive-indent--balanced-parens t
+  "Non-nil if the current-buffer has balanced parens.")
+
 (defun aggressive-indent--indent-if-changed ()
   "Indent any region that changed in the last command loop."
-  (when aggressive-indent--changed-list
+  (when (and aggressive-indent--changed-list aggressive-indent--balanced-parens)
     (save-excursion
       (save-selected-window
         (unless (or (run-hook-wrapped 'aggressive-indent--internal-dont-indent-if #'eval)
@@ -367,9 +370,6 @@ or messages."
                 (apply indent-function (car aggressive-indent--changed-list))
                 (setq aggressive-indent--changed-list
                       (cdr aggressive-indent--changed-list))))))))))
-
-(defvar-local aggressive-indent--balanced-parens t
-  "Non-nil if the current-buffer has balanced parens.")
 
 (defun aggressive-indent--check-parens ()
   "Check if parens are balanced in the current buffer.
