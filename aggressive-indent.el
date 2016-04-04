@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <emacs@endlessparentheses.com>
 ;; URL: https://github.com/Malabarba/aggressive-indent-mode
-;; Version: 1.5.2
+;; Version: 1.5.3
 ;; Package-Requires: ((emacs "24.1") (cl-lib "0.5"))
 ;; Keywords: indent lisp maint tools
 ;; Prefix: aggressive-indent
@@ -375,11 +375,12 @@ or messages."
   "Check if parens are balanced in the current buffer.
 Store result in `aggressive-indent--balanced-parens'."
   (setq aggressive-indent--balanced-parens
-        (ignore-errors
-          (save-restriction
-            (narrow-to-defun)
-            (check-parens)
-            t))))
+        (save-excursion
+          (ignore-errors
+            (save-restriction
+              (narrow-to-defun)
+              (check-parens)
+              t)))))
 
 (defun aggressive-indent--keep-track-of-changes (l r &rest _)
   "Store the limits (L and R) of each change in the buffer."
