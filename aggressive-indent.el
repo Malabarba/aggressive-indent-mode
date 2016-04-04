@@ -368,10 +368,24 @@ or messages."
                 (setq aggressive-indent--changed-list
                       (cdr aggressive-indent--changed-list))))))))))
 
+(defvar-local aggressive-indent--balanced-parens t
+  "Non-nil if the current-buffer has balanced parens.")
+
+(defun aggressive-indent--check-parens ()
+  "Check if parens are balanced in the current buffer.
+Store result in `aggressive-indent--balanced-parens'."
+  (setq aggressive-indent--balanced-parens
+        (ignore-errors
+          (save-restriction
+            (narrow-to-defun)
+            (check-parens)
+            t))))
+
 (defun aggressive-indent--keep-track-of-changes (l r &rest _)
   "Store the limits (L and R) of each change in the buffer."
   (when aggressive-indent-mode
-    (push (list l r) aggressive-indent--changed-list)))
+    (push (list l r) aggressive-indent--changed-list)
+    (aggressive-indent--check-parens)))
 
 ;;; Minor modes
 ;;;###autoload
@@ -393,11 +407,12 @@ or messages."
                    (memq major-mode '(text-mode fundamental-mode))
                    buffer-read-only))
           (aggressive-indent-mode -1)
-        ;; Should electric indent be ON or OFF?        
+        ;; Should electric indent be ON or OFF?
         (if (or (eq aggressive-indent-dont-electric-modes t)
                 (cl-member-if #'derived-mode-p aggressive-indent-dont-electric-modes))
             (aggressive-indent--local-electric nil)
           (aggressive-indent--local-electric t))
+        (aggressive-indent--check-parens)
         (add-hook 'after-change-functions #'aggressive-indent--keep-track-of-changes nil 'local)
         (add-hook 'post-command-hook #'aggressive-indent--indent-if-changed nil 'local))
     ;; Clean the hooks
