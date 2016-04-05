@@ -378,7 +378,6 @@ Store result in `aggressive-indent--balanced-parens'."
         (save-excursion
           (ignore-errors
             (save-restriction
-              (narrow-to-defun)
               (check-parens)
               t)))))
 
