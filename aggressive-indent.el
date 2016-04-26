@@ -386,8 +386,7 @@ Store result in `aggressive-indent--balanced-parens'."
   (setq aggressive-indent--balanced-parens
         (save-excursion
           (ignore-errors
-            (check-parens)
-            t))))
+            (zerop (car (syntax-ppss (point-max))))))))
 
 (defun aggressive-indent--keep-track-of-changes (l r &rest _)
   "Store the limits (L and R) of each change in the buffer."
