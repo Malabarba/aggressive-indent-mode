@@ -349,8 +349,9 @@ or messages."
   "List of (left right) limit of regions changed in the last command loop.")
 (make-variable-buffer-local 'aggressive-indent--changed-list)
 
-(defvar-local aggressive-indent--balanced-parens t
+(defvar aggressive-indent--balanced-parens t
   "Non-nil if the current-buffer has balanced parens.")
+(make-variable-buffer-local 'aggressive-indent--balanced-parens)
 
 (defun aggressive-indent--proccess-changed-list-and-indent ()
   "Indent the regions in `aggressive-indent--changed-list'."
@@ -360,7 +361,7 @@ or messages."
          (if (cl-member-if #'derived-mode-p aggressive-indent-modes-to-prefer-defun)
              #'aggressive-indent--softly-indent-defun #'aggressive-indent--softly-indent-region-and-on)))
     ;; Take the 10 most recent changes.
-    (let ((cell (last aggressive-indent--changed-list 10)))
+    (let ((cell (nthcdr 10 aggressive-indent--changed-list)))
       (when cell (setcdr cell nil)))
     ;; (message "----------")
     (while aggressive-indent--changed-list
