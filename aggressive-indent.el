@@ -1,6 +1,6 @@
 ;;; aggressive-indent.el --- Minor mode to aggressively keep your code always indented  -*- lexical-binding:t -*-
 
-;; Copyright (C) 2014 Free Software Foundation, Inc.
+;; Copyright (C) 2014, 2015, 2016 Free Software Foundation, Inc
 
 ;; Author: Artur Malabarba <emacs@endlessparentheses.com>
 ;; URL: https://github.com/Malabarba/aggressive-indent-mode
@@ -311,8 +311,7 @@ messages.  L and R passed to `aggressive-indent-indent-defun'."
 Call `indent-region' between L and R, and then keep indenting
 until nothing more happens."
   (interactive "r")
-  (let ((p (point-marker))
-        was-begining-of-line)
+  (let ((p (point-marker)))
     (set-marker-insertion-type p t)
     (unwind-protect
         (progn
