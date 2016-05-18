@@ -407,7 +407,6 @@ or messages."
                 (cl-member-if #'derived-mode-p aggressive-indent-dont-electric-modes))
             (aggressive-indent--local-electric nil)
           (aggressive-indent--local-electric t))
-        (aggressive-indent--check-parens)
         (add-hook 'after-change-functions #'aggressive-indent--keep-track-of-changes nil 'local)
         (add-hook 'before-save-hook #'aggressive-indent--proccess-changed-list-and-indent nil 'local)
         (add-hook 'post-command-hook #'aggressive-indent--indent-if-changed nil 'local))
