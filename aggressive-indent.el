@@ -105,7 +105,7 @@ Please include this in your report!"
 (defvar aggressive-indent-mode)
 
 ;;; Configuring indentarion
-(defcustom aggressive-indent-dont-electric-modes '(ruby-mode)
+(defcustom aggressive-indent-dont-electric-modes nil
   "List of major-modes where `electric-indent' should be disabled."
   :type '(choice
           (const :tag "Never use `electric-indent-mode'." t)
