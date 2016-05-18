@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <emacs@endlessparentheses.com>
 ;; URL: https://github.com/Malabarba/aggressive-indent-mode
-;; Version: 1.7
+;; Version: 1.8.1
 ;; Package-Requires: ((emacs "24.1") (cl-lib "0.5"))
 ;; Keywords: indent lisp maint tools
 ;; Prefix: aggressive-indent
@@ -129,6 +129,7 @@ Please include this in your report!"
     haskell-mode
     haskell-interactive-mode
     image-mode
+    inf-ruby-mode
     makefile-mode
     makefile-gmake-mode
     minibuffer-inactive-mode
