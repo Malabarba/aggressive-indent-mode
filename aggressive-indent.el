@@ -349,10 +349,6 @@ or messages."
   "List of (left right) limit of regions changed in the last command loop.")
 (make-variable-buffer-local 'aggressive-indent--changed-list)
 
-(defvar aggressive-indent--balanced-parens t
-  "Non-nil if the current-buffer has balanced parens.")
-(make-variable-buffer-local 'aggressive-indent--balanced-parens)
-
 (defun aggressive-indent--proccess-changed-list-and-indent ()
   "Indent the regions in `aggressive-indent--changed-list'."
   (let ((inhibit-modification-hooks t)
@@ -372,7 +368,7 @@ or messages."
 
 (defun aggressive-indent--indent-if-changed ()
   "Indent any region that changed in the last command loop."
-  (when (and aggressive-indent--changed-list aggressive-indent--balanced-parens)
+  (when aggressive-indent--changed-list
     (save-excursion
       (save-selected-window
         (unless (or (run-hook-wrapped 'aggressive-indent--internal-dont-indent-if #'eval)
@@ -381,19 +377,10 @@ or messages."
             (redisplay)
             (aggressive-indent--proccess-changed-list-and-indent)))))))
 
-(defun aggressive-indent--check-parens ()
-  "Check if parens are balanced in the current buffer.
-Store result in `aggressive-indent--balanced-parens'."
-  (setq aggressive-indent--balanced-parens
-        (save-excursion
-          (ignore-errors
-            (zerop (car (syntax-ppss (point-max))))))))
-
 (defun aggressive-indent--keep-track-of-changes (l r &rest _)
   "Store the limits (L and R) of each change in the buffer."
   (when aggressive-indent-mode
-    (push (list l r) aggressive-indent--changed-list)
-    (aggressive-indent--check-parens)))
+    (push (list l r) aggressive-indent--changed-list)))
 
 ;;; Minor modes
 ;;;###autoload
