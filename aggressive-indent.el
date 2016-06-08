@@ -135,6 +135,7 @@ Please include this in your report!"
     netcmd-mode
     python-mode
     sass-mode
+    scala-mode
     slim-mode
     special-mode
     shell-mode
