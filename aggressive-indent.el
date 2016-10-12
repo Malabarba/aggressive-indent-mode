@@ -256,9 +256,31 @@ This variable is a list where each element is a Lisp form.
 As long as any one of these forms returns non-nil,
 aggressive-indent will not perform any indentation.
 
-See `aggressive-indent--internal-dont-indent-if' for usage examples."
+See `aggressive-indent--internal-dont-indent-if' for usage examples.
+
+Note that this is only used once, and only on the line where the
+point is when we're about to start indenting.  In order to
+prevent indentation of further lines, see
+`aggressive-indent-stop-here-hook'."
   :type '(repeat sexp)
   :package-version '(aggressive-indent . "0.2"))
+
+(defcustom aggressive-indent-stop-here-hook nil
+  "A hook that runs on each line before it is indented.
+If any function on this hook returns non-nil, it immediately
+prevents indentation of the current line and any further
+lines.
+
+Note that aggressive-indent does indentation in two stages.  The
+first stage indents the entire edited region, while the second
+stage keeps indenting further lines until its own logic decide to
+stop.  This hook only affects the second stage.  That is, it
+effectly lets you add your own predicates to the logic that
+decides when to stop.
+
+In order to prevent indentation before the first stage, see
+`aggressive-indent-dont-indent-if' instead."
+  :type 'hook)
 
 (defvar aggressive-indent--error-message "One of the forms in `aggressive-indent-dont-indent-if' had the following error, I've disabled it until you fix it: %S"
   "Error message thrown by `aggressive-indent-dont-indent-if'.")
@@ -355,7 +377,8 @@ until nothing more happens."
           (forward-line 1)
           (skip-chars-forward "[:blank:]\n\r\xc")
           (let ((base-column (current-column)))
-            (while (and (null (eobp))
+            (while (and (not (eobp))
+                        (not (run-hook-with-args-until-success 'aggressive-indent-stop-here-hook))
                         (aggressive-indent--indent-current-balanced-line base-column)))))
       (goto-char p))))
 
