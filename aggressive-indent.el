@@ -243,6 +243,12 @@ This is for internal use only.  For user customization, use
                 '(and (derived-mode-p 'coq-mode)
                       (not (string-match "\\.[[:space:]]*$"
                                          (thing-at-point 'line))))))
+(eval-after-load 'ruby-mode
+  '(add-to-list 'aggressive-indent--internal-dont-indent-if
+                '(when (derived-mode-p 'ruby-mode)
+                   (let ((line (thing-at-point 'line)))
+                     (and (stringp line)
+                          (string-match "\\b\\(if\\|case\\|do\\|begin\\) *$" line))))))
 
 (defcustom aggressive-indent-dont-indent-if '()
   "List of variables and functions to prevent aggressive indenting.
