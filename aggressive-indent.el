@@ -124,6 +124,9 @@ Please include this in your report!"
     doc-view-mode
     dos-mode
     erc-mode
+    feature-mode
+    fortran-mode
+    f90-mode
     jabber-chat-mode
     haml-mode
     haskell-mode
