@@ -371,6 +371,12 @@ or messages."
       (setq aggressive-indent--changed-list
             (cdr aggressive-indent--changed-list)))))
 
+(defcustom aggressive-indent-sit-for-time 0.05
+  "Time, in seconds, to wait before indenting.
+If you feel aggressive-indent is causing Emacs to hang while
+typing, try tweaking this number."
+  :type 'float)
+
 (defun aggressive-indent--indent-if-changed ()
   "Indent any region that changed in the last command loop."
   (when aggressive-indent--changed-list
@@ -379,6 +385,7 @@ or messages."
         (unless (or (run-hook-wrapped 'aggressive-indent--internal-dont-indent-if #'eval)
                     (aggressive-indent--run-user-hooks))
           (while-no-input
+            (sit-for aggressive-indent-sit-for-time t)
             (redisplay)
             (aggressive-indent--proccess-changed-list-and-indent)))))))
 
