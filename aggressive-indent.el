@@ -187,7 +187,7 @@ change."
   :package-version '(aggressive-indent . "0.3"))
 
 ;;; Preventing indentation
-(defvar aggressive-indent--internal-dont-indent-if
+(defconst aggressive-indent--internal-dont-indent-if
   '((memq this-command aggressive-indent-protected-commands)
     (region-active-p)
     buffer-read-only
