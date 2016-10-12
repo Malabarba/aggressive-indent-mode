@@ -305,6 +305,31 @@ messages.  L and R passed to `aggressive-indent-indent-defun'."
     (ignore-errors (aggressive-indent-indent-defun l r))))
 
 ;;; Indenting region
+(defun aggressive-indent--indent-current-balanced-line (column)
+  "Indent current balanced line, if it starts at COLUMN.
+Balanced line means anything contained in a sexp that starts at
+the current line, or starts at the same line that one of these
+sexps ends.
+
+Return non-nil only if the line's indentation actually changed."
+  (when (= (current-column) column)
+    (unless (= (point)
+               (progn (indent-according-to-mode)
+                      (point)))
+      (let ((line-end (line-end-position)))
+        (forward-sexp 1)
+        (comment-forward (point-max))
+        ;; We know previous sexp finished on a previous line when
+        ;; there's only be whitespace behind point.
+        (while (progn
+                 (skip-chars-backward "[:blank:]")
+                 (not (looking-at "^")))
+          (forward-sexp 1)
+          (comment-forward (point-max)))
+        (when (looking-at "^")
+          (indent-region line-end (1- (point))))
+        (skip-chars-forward "[:blank:]")))))
+
 ;;;###autoload
 (defun aggressive-indent-indent-region-and-on (l r)
   "Indent region between L and R, and then some.
@@ -329,23 +354,9 @@ until nothing more happens."
           ;; And then we indent each following line until nothing happens.
           (forward-line 1)
           (skip-chars-forward "[:blank:]\n\r\xc")
-          (let* ((eod (ignore-errors
-                        (save-excursion (end-of-defun)
-                                        (point-marker))))
-                 (point-limit (if (and eod (< (point) eod))
-                                  eod (point-max-marker))))
+          (let ((base-column (current-column)))
             (while (and (null (eobp))
-                        (let ((op (point))
-                              (np (progn (indent-according-to-mode)
-                                         (point))))
-                          ;; As long as we're indenting things to the
-                          ;; left, keep indenting.
-                          (or (< np op)
-                              ;; If we're indenting to the right, or
-                              ;; not at all, stop at the limit.
-                              (< (point) point-limit))))
-              (forward-line 1)
-              (skip-chars-forward "[:blank:]\n\r\f"))))
+                        (aggressive-indent--indent-current-balanced-line base-column)))))
       (goto-char p))))
 
 (defun aggressive-indent--softly-indent-region-and-on (l r &rest _)
