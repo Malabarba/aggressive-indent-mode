@@ -248,7 +248,7 @@ This is for internal use only.  For user customization, use
                 '(when (derived-mode-p 'ruby-mode)
                    (let ((line (thing-at-point 'line)))
                      (and (stringp line)
-                          (string-match "\\b\\(if\\|case\\|do\\|begin\\) *$" line))))))
+                          (string-match "\\b\\(begin\\|case\\|d\\(?:ef\\|o\\)\\|if\\) *$" line))))))
 
 (defcustom aggressive-indent-dont-indent-if '()
   "List of variables and functions to prevent aggressive indenting.
