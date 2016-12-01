@@ -188,7 +188,7 @@ change."
 
 ;;; Preventing indentation
 (defconst aggressive-indent--internal-dont-indent-if
-  '((memq this-command aggressive-indent-protected-commands)
+  '((memq last-command aggressive-indent-protected-commands)
     (region-active-p)
     buffer-read-only
     undo-in-progress
