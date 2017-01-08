@@ -20,7 +20,7 @@ than `electric-indent-mode`.
 
 ### Instructions ###
 
-This package is available fom Melpa, you may install it by calling
+This package is available from Melpa, you may install it by calling
 
     M-x package-install RET aggressive-indent
 
