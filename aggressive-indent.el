@@ -133,6 +133,7 @@ Please include this in your report!"
     haskell-interactive-mode
     image-mode
     inf-ruby-mode
+    inferior-ess-mode
     makefile-mode
     makefile-gmake-mode
     minibuffer-inactive-mode
