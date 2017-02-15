@@ -112,45 +112,7 @@ Please include this in your report!"
           (repeat :tag "List of major-modes to avoid `electric-indent-mode'." symbol))
   :package-version '(aggressive-indent . "0.3.1"))
 
-(defcustom aggressive-indent-excluded-modes
-  '(
-    bibtex-mode
-    cider-repl-mode
-    coffee-mode
-    comint-mode
-    conf-mode
-    Custom-mode
-    diff-mode
-    doc-view-mode
-    dos-mode
-    erc-mode
-    feature-mode
-    fortran-mode
-    f90-mode
-    jabber-chat-mode
-    haml-mode
-    haskell-mode
-    haskell-interactive-mode
-    image-mode
-    inf-ruby-mode
-    makefile-mode
-    makefile-gmake-mode
-    minibuffer-inactive-mode
-    netcmd-mode
-    python-mode
-    sass-mode
-    scala-mode
-    slim-mode
-    special-mode
-    shell-mode
-    snippet-mode
-    eshell-mode
-    tabulated-list-mode
-    term-mode
-    TeX-output-mode
-    text-mode
-    yaml-mode
-    )
+(defcustom aggressive-indent-excluded-modes nil
   "Modes in which `aggressive-indent-mode' should not be activated.
 This variable is only used if `global-aggressive-indent-mode' is
 active.  If the minor mode is turned on with the local command,
@@ -458,6 +420,7 @@ typing, try tweaking this number."
   (if aggressive-indent-mode
       (if (and global-aggressive-indent-mode
                (or (cl-member-if #'derived-mode-p aggressive-indent-excluded-modes)
+                   (equal indent-line-function #'indent-relative)
                    (memq major-mode '(text-mode fundamental-mode))
                    buffer-read-only))
           (aggressive-indent-mode -1)
