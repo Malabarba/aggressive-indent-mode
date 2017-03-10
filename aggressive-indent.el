@@ -112,13 +112,17 @@ Please include this in your report!"
           (repeat :tag "List of major-modes to avoid `electric-indent-mode'." symbol))
   :package-version '(aggressive-indent . "0.3.1"))
 
-(defcustom aggressive-indent-excluded-modes nil
+(defcustom aggressive-indent-excluded-modes
+  '(makefile-mode
+    makefile-gmake-mode
+    text-mode
+    yaml-mode)
   "Modes in which `aggressive-indent-mode' should not be activated.
 This variable is only used if `global-aggressive-indent-mode' is
 active.  If the minor mode is turned on with the local command,
 `aggressive-indent-mode', this variable is ignored."
   :type '(repeat symbol)
-  :package-version '(aggressive-indent . "0.3.1"))
+  :package-version '(aggressive-indent . "1.8.4"))
 
 (defcustom aggressive-indent-protected-commands '(undo undo-tree-undo undo-tree-redo whitespace-cleanup)
   "Commands after which indentation will NOT be performed.
