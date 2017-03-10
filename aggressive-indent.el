@@ -132,6 +132,14 @@ commands will NOT be followed by a re-indent."
   :type '(repeat symbol)
   :package-version '(aggressive-indent . "0.1"))
 
+(defcustom aggressive-indent-protected-current-commands
+  '(query-replace-regexp query-replace)
+  "Like `aggressive-indent-protected-commands', but for the current command.
+For instance, with the default value, this variable prevents
+indentation during `query-replace' (but not after)."
+  :type '(repeat symbol)
+  :package-version '(aggressive-indent . "1.8.4"))
+
 (defcustom aggressive-indent-comments-too nil
   "If non-nil, aggressively indent in comments as well."
   :type 'boolean
@@ -155,6 +163,7 @@ change."
 ;;; Preventing indentation
 (defconst aggressive-indent--internal-dont-indent-if
   '((memq last-command aggressive-indent-protected-commands)
+    (memq this-command aggressive-indent-protected-current-commands)
     (region-active-p)
     buffer-read-only
     undo-in-progress
@@ -317,6 +326,15 @@ Return non-nil only if the line's indentation actually changed."
         (when (looking-at "^")
           (indent-region line-end (1- (point))))
         (skip-chars-forward "[:blank:]")))))
+
+(defun aggressive-indent--extend-end-to-whole-sexps (beg end)
+  "Return a point >= END, so that it covers whole sexps from BEG."
+  (save-excursion
+    (goto-char beg)
+    (while (and (< (point) end)
+                (not (eobp)))
+      (forward-sexp 1))
+    (point)))
 
 ;;;###autoload
 (defun aggressive-indent-indent-region-and-on (l r)
