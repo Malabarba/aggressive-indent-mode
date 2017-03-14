@@ -169,6 +169,7 @@ change."
     undo-in-progress
     (null (buffer-modified-p))
     (and (boundp 'smerge-mode) smerge-mode)
+    (equal (buffer-name) "*ediff-merge*")
     (let ((line (thing-at-point 'line)))
       (and (stringp line)
            ;; If the user is starting to type a comment.
