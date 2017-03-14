@@ -36,11 +36,17 @@ every programming mode, you can do something like:
     (global-aggressive-indent-mode 1)
     (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
 
+#### Debian and Ubuntu ####
+
+Users of Debian 9 or later or Ubuntu 16.04 or later may simply
+`apt-get install elpa-aggressive-indent`.
+
 #### Manual Installation ####
 
-If you don't want to install from Melpa, you can download it manually,
-place it in your `load-path` along with its dependency `cl-lib` (which
-you should already have if your `emacs-version` is at least 24.3).
+If you don't want to install from Melpa or using apt, you can download
+it manually, place it in your `load-path` along with its dependency
+`cl-lib` (which you should already have if your `emacs-version` is at
+least 24.3).
 
 Then require it with:
 
