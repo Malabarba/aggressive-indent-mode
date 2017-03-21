@@ -444,7 +444,8 @@ typing, try tweaking this number."
       (if (and global-aggressive-indent-mode
                (or (cl-member-if #'derived-mode-p aggressive-indent-excluded-modes)
                    (equal indent-line-function #'indent-relative)
-                   (memq major-mode '(text-mode fundamental-mode))
+                   (derived-mode-p 'text-mode)
+                   (eq major-mode 'fundamental-mode)
                    buffer-read-only))
           (aggressive-indent-mode -1)
         ;; Should electric indent be ON or OFF?
