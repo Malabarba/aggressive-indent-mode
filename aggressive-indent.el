@@ -113,7 +113,8 @@ Please include this in your report!"
   :package-version '(aggressive-indent . "0.3.1"))
 
 (defcustom aggressive-indent-excluded-modes
-  '(makefile-mode
+  '(inf-ruby-mode
+    makefile-mode
     makefile-gmake-mode
     text-mode
     yaml-mode)
