@@ -116,6 +116,7 @@ Please include this in your report!"
   '(inf-ruby-mode
     makefile-mode
     makefile-gmake-mode
+    python-mode
     text-mode
     yaml-mode)
   "Modes in which `aggressive-indent-mode' should not be activated.
