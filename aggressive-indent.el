@@ -167,11 +167,9 @@ change."
 
 ;;; Preventing indentation
 (defconst aggressive-indent--internal-dont-indent-if
-  '((memq last-command aggressive-indent-protected-commands)
-    (memq this-command aggressive-indent-protected-current-commands)
+  '((memq this-command aggressive-indent-protected-current-commands)
     (region-active-p)
     buffer-read-only
-    undo-in-progress
     (null (buffer-modified-p))
     (and (boundp 'smerge-mode) smerge-mode)
     (equal (buffer-name) "*ediff-merge*")
@@ -471,6 +469,15 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
       (when (timerp aggressive-indent--idle-timer)
         (cancel-timer aggressive-indent--idle-timer)))))
 
+(defun aggressive-indent--post-command ()
+  "Hook run after every command while in `aggressive-indent-mode'.
+
+Clears `aggressive-indent--changed-list' iff the current
+command (the one that's now finished) lives in
+`aggressive-indent-protected-commands'."
+  (when (memq this-command aggressive-indent-protected-commands)
+    (setq aggressive-indent--changed-list nil)))
+
 (defun aggressive-indent--keep-track-of-changes (l r &rest _)
   "Store the limits (L and R) of each change in the buffer."
   (when aggressive-indent-mode
@@ -509,14 +516,15 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
           (aggressive-indent--local-electric t))
         (add-hook 'after-change-functions #'aggressive-indent--keep-track-of-changes nil 'local)
         (add-hook 'after-revert-hook #'aggressive-indent--clear-change-list nil 'local)
-        (add-hook 'before-save-hook #'aggressive-indent--proccess-changed-list-and-indent nil 'local))
+        (add-hook 'before-save-hook #'aggressive-indent--proccess-changed-list-and-indent nil 'local)
+        (add-hook 'post-command-hook #'aggressive-indent--post-command nil 'local))
     ;; Clean the hooks
     (when (timerp aggressive-indent--idle-timer)
       (cancel-timer aggressive-indent--idle-timer))
     (remove-hook 'after-change-functions #'aggressive-indent--keep-track-of-changes 'local)
     (remove-hook 'after-revert-hook #'aggressive-indent--clear-change-list 'local)
     (remove-hook 'before-save-hook #'aggressive-indent--proccess-changed-list-and-indent 'local)
-    (remove-hook 'post-command-hook #'aggressive-indent--softly-indent-defun 'local)))
+    (remove-hook 'post-command-hook #'aggressive-indent--post-command 'local)))
 
 (defun aggressive-indent--local-electric (on)
   "Turn variable `electric-indent-mode' on or off locally, as per boolean ON."
