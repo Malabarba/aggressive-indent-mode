@@ -417,13 +417,15 @@ typing, try tweaking this number."
 
 (defun aggressive-indent--indent-if-changed ()
   "Indent any region that changed in the last command loop."
-  (when (and aggressive-indent-mode aggressive-indent--changed-list)
-    (save-excursion
-      (save-selected-window
-        (while-no-input
-          (aggressive-indent--proccess-changed-list-and-indent))))
-    (when (timerp aggressive-indent--idle-timer)
-      (cancel-timer aggressive-indent--idle-timer))))
+  (if (not (buffer-live-p (current-buffer)))
+      (cancel-timer aggressive-indent--idle-timer)
+    (when (and aggressive-indent-mode aggressive-indent--changed-list)
+      (save-excursion
+        (save-selected-window
+          (while-no-input
+            (aggressive-indent--proccess-changed-list-and-indent))))
+      (when (timerp aggressive-indent--idle-timer)
+        (cancel-timer aggressive-indent--idle-timer)))))
 
 (defun aggressive-indent--keep-track-of-changes (l r &rest _)
   "Store the limits (L and R) of each change in the buffer."
