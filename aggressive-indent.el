@@ -415,6 +415,43 @@ typing, try tweaking this number."
 (defvar-local aggressive-indent--idle-timer nil
   "Idle timer used for indentation")
 
+;; Ripped from Emacs 27.0 subr.el.
+;; See Github Issue#111 and Emacs bug#31692.
+(defmacro aggressive-indent--while-no-input (&rest body)
+  "Execute BODY only as long as there's no pending input.
+If input arrives, that ends the execution of BODY,
+and `while-no-input' returns t.  Quitting makes it return nil.
+If BODY finishes, `while-no-input' returns whatever value BODY produced."
+  (declare (debug t) (indent 0))
+  (let ((catch-sym (make-symbol "input")))
+    `(with-local-quit
+       (catch ',catch-sym
+	 (let ((throw-on-input ',catch-sym)
+               val)
+           (setq val (or (input-pending-p)
+	                 (progn ,@body)))
+           (cond
+            ;; When input arrives while throw-on-input is non-nil,
+            ;; kbd_buffer_store_buffered_event sets quit-flag to the
+            ;; value of throw-on-input.  If, when BODY finishes,
+            ;; quit-flag still has the same value as throw-on-input, it
+            ;; means BODY never tested quit-flag, and therefore ran to
+            ;; completion even though input did arrive before it
+            ;; finished.  In that case, we must manually simulate what
+            ;; 'throw' in process_quit_flag would do, and we must
+            ;; reset quit-flag, because leaving it set will cause us
+            ;; quit to top-level, which has undesirable consequences,
+            ;; such as discarding input etc.  We return t in that case
+            ;; because input did arrive during execution of BODY.
+            ((eq quit-flag throw-on-input)
+             (setq quit-flag nil)
+             t)
+            ;; This is for when the user actually QUITs during
+            ;; execution of BODY.
+            (quit-flag
+             nil)
+            (t val)))))))
+
 (defun aggressive-indent--indent-if-changed ()
   "Indent any region that changed in the last command loop."
   (if (not (buffer-live-p (current-buffer)))
@@ -422,7 +459,7 @@ typing, try tweaking this number."
     (when (and aggressive-indent-mode aggressive-indent--changed-list)
       (save-excursion
         (save-selected-window
-          (while-no-input
+          (aggressive-indent--while-no-input
             (aggressive-indent--proccess-changed-list-and-indent))))
       (when (timerp aggressive-indent--idle-timer)
         (cancel-timer aggressive-indent--idle-timer)))))
