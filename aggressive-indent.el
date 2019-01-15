@@ -104,7 +104,7 @@ Please include this in your report!"
 
 (defvar aggressive-indent-mode)
 
-;;; Configuring indentarion
+;;; Configuring indentation
 (defcustom aggressive-indent-dont-electric-modes nil
   "List of major-modes where `electric-indent' should be disabled."
   :type '(choice
