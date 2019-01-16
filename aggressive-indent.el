@@ -104,7 +104,7 @@ Please include this in your report!"
 
 (defvar aggressive-indent-mode)
 
-;;; Configuring indentarion
+;;; Configuring indentation
 (defcustom aggressive-indent-dont-electric-modes nil
   "List of major-modes where `electric-indent' should be disabled."
   :type '(choice
@@ -113,7 +113,9 @@ Please include this in your report!"
   :package-version '(aggressive-indent . "0.3.1"))
 
 (defcustom aggressive-indent-excluded-modes
-  '(inf-ruby-mode
+  '(elm-mode
+    haskell-mode
+    inf-ruby-mode
     makefile-mode
     makefile-gmake-mode
     python-mode
