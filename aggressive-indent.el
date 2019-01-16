@@ -119,6 +119,7 @@ Please include this in your report!"
     makefile-mode
     makefile-gmake-mode
     python-mode
+    sql-interactive-mode
     text-mode
     yaml-mode)
   "Modes in which `aggressive-indent-mode' should not be activated.
