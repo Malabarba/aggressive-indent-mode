@@ -409,6 +409,10 @@ or messages."
         (setq aggressive-indent--changed-list
               (cdr aggressive-indent--changed-list))))))
 
+(defun aggressive-indent--clear-change-list ()
+  "Clear cache of all changed regions. "
+  (setq aggressive-indent--changed-list nil))
+
 (defcustom aggressive-indent-sit-for-time 0.05
   "Time, in seconds, to wait before indenting.
 If you feel aggressive-indent is causing Emacs to hang while
@@ -504,11 +508,13 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
             (aggressive-indent--local-electric nil)
           (aggressive-indent--local-electric t))
         (add-hook 'after-change-functions #'aggressive-indent--keep-track-of-changes nil 'local)
+        (add-hook 'after-revert-hook #'aggressive-indent--clear-change-list nil 'local)
         (add-hook 'before-save-hook #'aggressive-indent--proccess-changed-list-and-indent nil 'local))
     ;; Clean the hooks
     (when (timerp aggressive-indent--idle-timer)
       (cancel-timer aggressive-indent--idle-timer))
     (remove-hook 'after-change-functions #'aggressive-indent--keep-track-of-changes 'local)
+    (remove-hook 'after-revert-hook #'aggressive-indent--clear-change-list 'local)
     (remove-hook 'before-save-hook #'aggressive-indent--proccess-changed-list-and-indent 'local)
     (remove-hook 'post-command-hook #'aggressive-indent--softly-indent-defun 'local)))
 
