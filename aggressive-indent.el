@@ -394,7 +394,7 @@ or messages."
   "Indent the regions in `aggressive-indent--changed-list'."
   (unless (or (run-hook-wrapped 'aggressive-indent--internal-dont-indent-if #'eval)
               (aggressive-indent--run-user-hooks))
-    (let ((inhibit-modification-hooks t)
+    (let ((after-change-functions (remove 'aggressive-indent--keep-track-of-changes after-change-functions))
           (inhibit-point-motion-hooks t)
           (indent-function
            (if (cl-member-if #'derived-mode-p aggressive-indent-modes-to-prefer-defun)
