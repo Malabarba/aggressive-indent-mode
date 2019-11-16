@@ -93,13 +93,19 @@
   "Opens github issues page in a web browser.  Please send any bugs you find.
 Please include your Emacs and `aggressive-indent' versions."
   (interactive)
-  (message "Your `aggressive-indent-version' is: %s, and your emacs version is: %s.
-Please include this in your report!"
-           (eval-when-compile
-             (ignore-errors
-               (require 'lisp-mnt)
-               (lm-version)))
-           emacs-version)
+  (with-output-to-temp-buffer "*Aggressive Indent*"
+    (let ((format-str "\
+<!-- Please copy and paste below template to github issue -->\n\n\n
+## Description
+<!-- Please write a description of your issue -->\n\n
+## Emacs info
+```
+Emacs: %s
+Aggressive-indent: %s
+```"))
+      (princ (format format-str
+                     (replace-regexp-in-string "\n" "" (emacs-version))
+                     (pkg-info-version-info 'aggressive-indent)))))
   (browse-url "https://github.com/Malabarba/aggressive-indent-mode/issues/new"))
 
 (defvar aggressive-indent-mode)
