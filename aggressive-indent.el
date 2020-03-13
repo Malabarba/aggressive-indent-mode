@@ -480,6 +480,12 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
     (setq aggressive-indent--idle-timer
           (run-with-idle-timer aggressive-indent-sit-for-time t #'aggressive-indent--indent-if-changed))))
 
+(defun aggressive-indent--on-buffer-kill ()
+  "Cancel the timer before buffer is killed"
+  (when (timerp aggressive-indent--idle-timer)
+    (cancel-timer aggressive-indent--idle-timer)
+    (setq aggressive-indent--idle-timer nil)))
+
 ;;; Minor modes
 ;;;###autoload
 (define-minor-mode aggressive-indent-mode
@@ -509,14 +515,16 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
           (aggressive-indent--local-electric t))
         (add-hook 'after-change-functions #'aggressive-indent--keep-track-of-changes nil 'local)
         (add-hook 'after-revert-hook #'aggressive-indent--clear-change-list nil 'local)
-        (add-hook 'before-save-hook #'aggressive-indent--proccess-changed-list-and-indent nil 'local))
+        (add-hook 'before-save-hook #'aggressive-indent--proccess-changed-list-and-indent nil 'local)
+        (add-hook 'kill-buffer-hook #'aggressive-indent--on-buffer-kill nil 'local))
     ;; Clean the hooks
     (when (timerp aggressive-indent--idle-timer)
       (cancel-timer aggressive-indent--idle-timer))
     (remove-hook 'after-change-functions #'aggressive-indent--keep-track-of-changes 'local)
     (remove-hook 'after-revert-hook #'aggressive-indent--clear-change-list 'local)
     (remove-hook 'before-save-hook #'aggressive-indent--proccess-changed-list-and-indent 'local)
-    (remove-hook 'post-command-hook #'aggressive-indent--softly-indent-defun 'local)))
+    (remove-hook 'post-command-hook #'aggressive-indent--softly-indent-defun 'local)
+    (remove-hook 'kill-buffer-hook #'aggressive-indent--on-buffer-kill 'local)))
 
 (defun aggressive-indent--local-electric (on)
   "Turn variable `electric-indent-mode' on or off locally, as per boolean ON."
