@@ -459,17 +459,18 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
              nil)
             (t val)))))))
 
-(defun aggressive-indent--indent-if-changed ()
-  "Indent any region that changed in the last command loop."
-  (if (not (buffer-live-p (current-buffer)))
-      (cancel-timer aggressive-indent--idle-timer)
-    (when (and aggressive-indent-mode aggressive-indent--changed-list)
-      (save-excursion
-        (save-selected-window
-          (aggressive-indent--while-no-input
-            (aggressive-indent--proccess-changed-list-and-indent))))
-      (when (timerp aggressive-indent--idle-timer)
-        (cancel-timer aggressive-indent--idle-timer)))))
+(defun aggressive-indent--indent-if-changed (buffer)
+  "Indent any region that changed in BUFFER in the last command loop."
+  (with-current-buffer buffer
+    (if (not (buffer-live-p (current-buffer)))
+        (cancel-timer aggressive-indent--idle-timer)
+      (when (and aggressive-indent-mode aggressive-indent--changed-list)
+        (save-excursion
+          (save-selected-window
+            (aggressive-indent--while-no-input
+              (aggressive-indent--proccess-changed-list-and-indent))))
+        (when (timerp aggressive-indent--idle-timer)
+          (cancel-timer aggressive-indent--idle-timer))))))
 
 (defun aggressive-indent--keep-track-of-changes (l r &rest _)
   "Store the limits (L and R) of each change in the buffer."
@@ -478,7 +479,7 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
     (when (timerp aggressive-indent--idle-timer)
       (cancel-timer aggressive-indent--idle-timer))
     (setq aggressive-indent--idle-timer
-          (run-with-idle-timer aggressive-indent-sit-for-time t #'aggressive-indent--indent-if-changed))))
+          (run-with-idle-timer aggressive-indent-sit-for-time t #'aggressive-indent--indent-if-changed (current-buffer)))))
 
 ;;; Minor modes
 ;;;###autoload
