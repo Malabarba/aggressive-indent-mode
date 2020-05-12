@@ -461,9 +461,9 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
 
 (defun aggressive-indent--indent-if-changed (buffer)
   "Indent any region that changed in BUFFER in the last command loop."
-  (with-current-buffer buffer
-    (if (not (buffer-live-p (current-buffer)))
-        (cancel-timer aggressive-indent--idle-timer)
+  (if (not (buffer-live-p buffer))
+      (cancel-timer aggressive-indent--idle-timer)
+    (with-current-buffer buffer
       (when (and aggressive-indent-mode aggressive-indent--changed-list)
         (save-excursion
           (save-selected-window
