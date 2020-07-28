@@ -390,7 +390,7 @@ or messages."
   "List of (left right) limit of regions changed in the last command loop.")
 (make-variable-buffer-local 'aggressive-indent--changed-list)
 
-(defun aggressive-indent--proccess-changed-list-and-indent ()
+(defun aggressive-indent--process-changed-list-and-indent ()
   "Indent the regions in `aggressive-indent--changed-list'."
   (unless (or (run-hook-wrapped 'aggressive-indent--internal-dont-indent-if #'eval)
               (aggressive-indent--run-user-hooks))
@@ -474,7 +474,7 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
         (save-excursion
           (save-selected-window
             (aggressive-indent--while-no-input
-              (aggressive-indent--proccess-changed-list-and-indent))))
+              (aggressive-indent--process-changed-list-and-indent))))
         (aggressive-indent--maybe-cancel-timer)))))
 
 (defun aggressive-indent--keep-track-of-changes (l r &rest _)
@@ -514,13 +514,13 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
           (aggressive-indent--local-electric t))
         (add-hook 'after-change-functions #'aggressive-indent--keep-track-of-changes nil 'local)
         (add-hook 'after-revert-hook #'aggressive-indent--clear-change-list nil 'local)
-        (add-hook 'before-save-hook #'aggressive-indent--proccess-changed-list-and-indent nil 'local)
+        (add-hook 'before-save-hook #'aggressive-indent--process-changed-list-and-indent nil 'local)
         (add-hook 'kill-buffer-hook #'aggressive-indent--maybe-cancel-timer nil 'local))
     ;; Clean the hooks
     (aggressive-indent--maybe-cancel-timer)
     (remove-hook 'after-change-functions #'aggressive-indent--keep-track-of-changes 'local)
     (remove-hook 'after-revert-hook #'aggressive-indent--clear-change-list 'local)
-    (remove-hook 'before-save-hook #'aggressive-indent--proccess-changed-list-and-indent 'local)
+    (remove-hook 'before-save-hook #'aggressive-indent--process-changed-list-and-indent 'local)
     (remove-hook 'post-command-hook #'aggressive-indent--softly-indent-defun 'local)
     (remove-hook 'kill-buffer-hook #'aggressive-indent--maybe-cancel-timer 'local)))
 
