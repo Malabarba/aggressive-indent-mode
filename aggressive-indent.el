@@ -459,33 +459,31 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
              nil)
             (t val)))))))
 
+(defun aggressive-indent--maybe-cancel-timer ()
+  "Cancel and remove the timer if it is set."
+  (when (timerp aggressive-indent--idle-timer)
+    (cancel-timer aggressive-indent--idle-timer)
+    (setq aggressive-indent--idle-timer nil)))
+
 (defun aggressive-indent--indent-if-changed (buffer)
   "Indent any region that changed in BUFFER in the last command loop."
   (if (not (buffer-live-p buffer))
-      (cancel-timer aggressive-indent--idle-timer)
+      (aggressive-indent--maybe-cancel-timer)
     (with-current-buffer buffer
       (when (and aggressive-indent-mode aggressive-indent--changed-list)
         (save-excursion
           (save-selected-window
             (aggressive-indent--while-no-input
               (aggressive-indent--proccess-changed-list-and-indent))))
-        (when (timerp aggressive-indent--idle-timer)
-          (cancel-timer aggressive-indent--idle-timer))))))
+        (aggressive-indent--maybe-cancel-timer)))))
 
 (defun aggressive-indent--keep-track-of-changes (l r &rest _)
   "Store the limits (L and R) of each change in the buffer."
   (when aggressive-indent-mode
     (push (list l r) aggressive-indent--changed-list)
-    (when (timerp aggressive-indent--idle-timer)
-      (cancel-timer aggressive-indent--idle-timer))
+    (aggressive-indent--maybe-cancel-timer)
     (setq aggressive-indent--idle-timer
           (run-with-idle-timer aggressive-indent-sit-for-time t #'aggressive-indent--indent-if-changed (current-buffer)))))
-
-(defun aggressive-indent--on-buffer-kill ()
-  "Cancel the timer before buffer is killed"
-  (when (timerp aggressive-indent--idle-timer)
-    (cancel-timer aggressive-indent--idle-timer)
-    (setq aggressive-indent--idle-timer nil)))
 
 ;;; Minor modes
 ;;;###autoload
@@ -517,15 +515,14 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
         (add-hook 'after-change-functions #'aggressive-indent--keep-track-of-changes nil 'local)
         (add-hook 'after-revert-hook #'aggressive-indent--clear-change-list nil 'local)
         (add-hook 'before-save-hook #'aggressive-indent--proccess-changed-list-and-indent nil 'local)
-        (add-hook 'kill-buffer-hook #'aggressive-indent--on-buffer-kill nil 'local))
+        (add-hook 'kill-buffer-hook #'aggressive-indent--maybe-cancel-timer nil 'local))
     ;; Clean the hooks
-    (when (timerp aggressive-indent--idle-timer)
-      (cancel-timer aggressive-indent--idle-timer))
+    (aggressive-indent--maybe-cancel-timer)
     (remove-hook 'after-change-functions #'aggressive-indent--keep-track-of-changes 'local)
     (remove-hook 'after-revert-hook #'aggressive-indent--clear-change-list 'local)
     (remove-hook 'before-save-hook #'aggressive-indent--proccess-changed-list-and-indent 'local)
     (remove-hook 'post-command-hook #'aggressive-indent--softly-indent-defun 'local)
-    (remove-hook 'kill-buffer-hook #'aggressive-indent--on-buffer-kill 'local)))
+    (remove-hook 'kill-buffer-hook #'aggressive-indent--maybe-cancel-timer 'local)))
 
 (defun aggressive-indent--local-electric (on)
   "Turn variable `electric-indent-mode' on or off locally, as per boolean ON."
