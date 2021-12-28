@@ -1,4 +1,4 @@
-aggressive-indent-mode [![Melpa](http://melpa.org/packages/aggressive-indent-badge.svg)](http://melpa.org/#/aggressive-indent) [![Melpa-Stable](http://stable.melpa.org/packages/aggressive-indent-badge.svg)](http://stable.melpa.org/#/aggressive-indent)
+aggressive-indent-mode [![GNU ELPA](https://elpa.gnu.org/packages/aggressive-indent.svg)](https://elpa.gnu.org/packages/aggressive-indent.html) [![Melpa](http://melpa.org/packages/aggressive-indent-badge.svg)](http://melpa.org/#/aggressive-indent) [![Melpa-Stable](http://stable.melpa.org/packages/aggressive-indent-badge.svg)](http://stable.melpa.org/#/aggressive-indent)
 ======================
 
 `electric-indent-mode` is enough to keep your code nicely aligned when
