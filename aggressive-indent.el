@@ -138,7 +138,7 @@ commands will NOT be followed by a re-indent."
   :package-version '(aggressive-indent . "0.1"))
 
 (defcustom aggressive-indent-protected-current-commands
-  '(query-replace-regexp query-replace)
+  '(query-replace-regexp query-replace exit-minibuffer)
   "Like `aggressive-indent-protected-commands', but for the current command.
 For instance, with the default value, this variable prevents
 indentation during `query-replace' (but not after)."
