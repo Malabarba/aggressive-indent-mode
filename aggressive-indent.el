@@ -487,17 +487,18 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
 ;;; Minor modes
 ;;;###autoload
 (define-minor-mode aggressive-indent-mode
+  "Minor mode to keep your code always indented."
   :lighter " =>"
-  `((,(kbd "C-c C-q") . aggressive-indent-indent-defun)
-    ([backspace]
-     menu-item "maybe-delete-indentation" ignore :filter
-     (lambda (&optional _)
-       (when (and (looking-back "^[[:blank:]]+")
-                  ;; Wherever we don't want to indent, we probably also
-                  ;; want the default backspace behavior.
-                  (not (run-hook-wrapped 'aggressive-indent--internal-dont-indent-if #'eval))
-                  (not (aggressive-indent--run-user-hooks)))
-         #'delete-indentation))))
+  :keymap `((,(kbd "C-c C-q") . aggressive-indent-indent-defun)
+            ([backspace]
+             menu-item "maybe-delete-indentation" ignore :filter
+             (lambda (&optional _)
+               (when (and (looking-back "^[[:blank:]]+")
+                          ;; Wherever we don't want to indent, we probably also
+                          ;; want the default backspace behavior.
+                          (not (run-hook-wrapped 'aggressive-indent--internal-dont-indent-if #'eval))
+                          (not (aggressive-indent--run-user-hooks)))
+                 #'delete-indentation))))
   (if aggressive-indent-mode
       (if (and (bound-and-true-p global-aggressive-indent-mode)
                (or (cl-member-if #'derived-mode-p aggressive-indent-excluded-modes)
