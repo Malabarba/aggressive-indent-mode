@@ -487,7 +487,7 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
 ;;; Minor modes
 ;;;###autoload
 (define-minor-mode aggressive-indent-mode
-  nil nil " =>"
+  :lighter " =>"
   `((,(kbd "C-c C-q") . aggressive-indent-indent-defun)
     ([backspace]
      menu-item "maybe-delete-indentation" ignore :filter
@@ -499,7 +499,7 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
                   (not (aggressive-indent--run-user-hooks)))
          #'delete-indentation))))
   (if aggressive-indent-mode
-      (if (and global-aggressive-indent-mode
+      (if (and (bound-and-true-p global-aggressive-indent-mode)
                (or (cl-member-if #'derived-mode-p aggressive-indent-excluded-modes)
                    (equal indent-line-function #'indent-relative)
                    (derived-mode-p 'text-mode)
