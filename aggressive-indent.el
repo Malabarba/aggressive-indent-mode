@@ -129,7 +129,7 @@ active.  If the minor mode is turned on with the local command,
   :type '(repeat symbol)
   :package-version '(aggressive-indent . "1.8.4"))
 
-(defcustom aggressive-indent-protected-commands '(undo undo-tree-undo undo-tree-redo whitespace-cleanup)
+(defcustom aggressive-indent-protected-commands '(undo undo-tree-undo undo-tree-redo undo-tree-visualize undo-tree-visualize-undo undo-tree-visualize-redo whitespace-cleanup)
   "Commands after which indentation will NOT be performed.
 Aggressive indentation could break things like `undo' by locking
 the user in a loop, so this variable is used to control which
