@@ -390,7 +390,7 @@ or messages."
 (make-variable-buffer-local 'aggressive-indent--changed-list)
 
 (defun aggressive-indent--process-changed-list-and-indent ()
-  "Indent the regions in `aggressive-indent--changed-list'."
+  "Indent the regions in `aggressive-indent--changed-list' and cancel the idle timer."
   (unless (or (run-hook-wrapped 'aggressive-indent--internal-dont-indent-if #'eval)
               (aggressive-indent--run-user-hooks))
     (let ((after-change-functions (remove 'aggressive-indent--keep-track-of-changes after-change-functions))
@@ -406,7 +406,8 @@ or messages."
         ;; (message "%S" (car aggressive-indent--changed-list))
         (apply indent-function (car aggressive-indent--changed-list))
         (setq aggressive-indent--changed-list
-              (cdr aggressive-indent--changed-list))))))
+              (cdr aggressive-indent--changed-list)))))
+  (aggressive-indent--maybe-cancel-timer))
 
 (defun aggressive-indent--clear-change-list ()
   "Clear cache of all changed regions. "
@@ -473,8 +474,7 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
         (save-excursion
           (save-selected-window
             (aggressive-indent--while-no-input
-              (aggressive-indent--process-changed-list-and-indent))))
-        (aggressive-indent--maybe-cancel-timer)))))
+              (aggressive-indent--process-changed-list-and-indent))))))))
 
 (defun aggressive-indent--keep-track-of-changes (l r &rest _)
   "Store the limits (L and R) of each change in the buffer."
